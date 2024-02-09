@@ -8,10 +8,19 @@ let sketch = function (p: p5) {
         max: 1.5
     }
 
+    const setCanvasSize = function () {
+        let factorSize = 0.9;
+        let squareLength = (p.windowWidth < p.windowHeight ? p.windowWidth : p.windowHeight) * factorSize;
+        squareLength = Math.floor(squareLength);
+        p.resizeCanvas(squareLength, squareLength);
+    }
+
     p.setup = function () {
         let gui = new GUI();
         p.createCanvas(500, 500);
+        setCanvasSize();
         p.pixelDensity(1);
+        p.frameRate(1);
         gui.add(settings, 'maxIterations', 0, 1000);
         gui.add(settings, 'min', -10, 10);
         gui.add(settings, 'max', -10, 10);
@@ -19,7 +28,6 @@ let sketch = function (p: p5) {
     }
     p.draw = function () {
         p.loadPixels();
-
         for (let x = 0; x < p.width; x++) {
             for (let y = 0; y < p.height; y++) {
                 // Get the current coordinates and map them to the complex plane
@@ -53,8 +61,9 @@ let sketch = function (p: p5) {
                     brightness = 0;
                 }
 
-                // Get the pixel index
+                // Get the current pixel index based on x and y
                 let pix = (x + y * p.width) * 4;
+
                 // Set the pixel color
                 p.pixels[pix + 0] = brightness;
                 p.pixels[pix + 1] = brightness;
@@ -63,6 +72,9 @@ let sketch = function (p: p5) {
             }
         }
         p.updatePixels();
+    }
+    p.windowResized = function () {
+        setCanvasSize();
     }
 }
 let instantiatedSketch = new p5(sketch);
