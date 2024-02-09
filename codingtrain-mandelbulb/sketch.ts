@@ -12,11 +12,11 @@ let sketch = function (p: p5) {
     p.setup = function () {
         p.createCanvas(500, 500, p.WEBGL);
         setCanvasSize();
-        p.frameRate(12);
+        p.frameRate(24);
     }
     p.draw = function () {
         p.background(0);
-        p.orbitControl(10, 10, 10, { freeRotation: true });
+        p.orbitControl(1, 1, 1, { freeRotation: true });
         p.strokeWeight(.1)
         p.stroke(255);
         for (let i = 0; i < cubeLength; i++) {
