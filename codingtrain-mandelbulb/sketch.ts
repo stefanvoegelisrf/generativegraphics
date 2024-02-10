@@ -12,8 +12,8 @@ class SphericalCoordinate {
 }
 
 let sketch = function (p: p5) {
-    let cubeLength = 32;
-
+    let cubeLength = 128;
+    let mandelBulbPoints: p5.Vector[] = [];
     const setCanvasSize = function () {
         let factorSize = 0.9;
         let squareLength = (p.windowWidth < p.windowHeight ? p.windowWidth : p.windowHeight) * factorSize;
@@ -33,16 +33,11 @@ let sketch = function (p: p5) {
         p.createCanvas(500, 500, p.WEBGL);
         setCanvasSize();
         p.frameRate(24);
-    }
-    p.draw = function () {
-        p.background(0);
-        p.orbitControl(1, 1, 1, { freeRotation: true });
-        p.strokeWeight(.1)
-        p.stroke(255);
         let n = 8;
         let maxIterations = 10;
         for (let i = 0; i < cubeLength; i++) {
             for (let j = 0; j < cubeLength; j++) {
+                let edge = false;
                 for (let k = 0; k < cubeLength; k++) {
                     let x = p.map(i, 0, cubeLength, -1, 1);
                     let y = p.map(j, 0, cubeLength, -1, 1);
@@ -61,16 +56,31 @@ let sketch = function (p: p5) {
                         zeta.y = newY + y;
                         zeta.z = newZ + z;
                         if (sphericalZeta.distanceFromOrigin > 2) {
+                            if (edge) {
+                                edge = false;
+                            }
                             break;
                         }
                         if (iteration > maxIterations) {
-                            p.point(x * 100, y * 100, z * 100);
+                            if (!edge) {
+                                edge = true;
+                                mandelBulbPoints.push(p.createVector(x * 100, y * 100, z * 100));
+                            }
                             break;
                         }
                         iteration++;
                     }
                 }
             }
+        }
+    }
+    p.draw = function () {
+        p.background(0);
+        p.orbitControl(1, 1, 1, { freeRotation: true });
+        p.strokeWeight(.1)
+        p.stroke(255);
+        for (let i = 0; i < mandelBulbPoints.length; i++) {
+            p.point(mandelBulbPoints[i].x, mandelBulbPoints[i].y, mandelBulbPoints[i].z);
         }
     }
     p.windowResized = function () {
