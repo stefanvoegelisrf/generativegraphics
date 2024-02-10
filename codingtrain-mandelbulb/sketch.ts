@@ -1,12 +1,32 @@
 import p5 from 'p5';
 
+class SphericalCoordinate {
+    distanceFromOrigin: number;
+    thetaAngle: number;
+    phiAngle: number;
+    constructor(distanceFromOrigin: number, thetaAngle: number, phiAngle: number) {
+        this.distanceFromOrigin = distanceFromOrigin;
+        this.thetaAngle = thetaAngle;
+        this.phiAngle = phiAngle;
+    }
+}
+
 let sketch = function (p: p5) {
     let cubeLength = 32;
+
     const setCanvasSize = function () {
         let factorSize = 0.9;
         let squareLength = (p.windowWidth < p.windowHeight ? p.windowWidth : p.windowHeight) * factorSize;
         squareLength = Math.floor(squareLength);
         p.resizeCanvas(squareLength, squareLength);
+    }
+
+    const convertToSphericalCoordinate = function (x: number, y: number, z: number): SphericalCoordinate {
+        let distanceFromOrigin = Math.sqrt(x * x + y * y + z * z);
+        let thetaAngle = Math.atan2(Math.sqrt(x * x + y * y), z);
+        let phiAngle = Math.atan2(y, x);
+
+        return new SphericalCoordinate(distanceFromOrigin, thetaAngle, phiAngle);
     }
 
     p.setup = function () {
@@ -19,13 +39,36 @@ let sketch = function (p: p5) {
         p.orbitControl(1, 1, 1, { freeRotation: true });
         p.strokeWeight(.1)
         p.stroke(255);
+        let n = 8;
+        let maxIterations = 10;
         for (let i = 0; i < cubeLength; i++) {
             for (let j = 0; j < cubeLength; j++) {
                 for (let k = 0; k < cubeLength; k++) {
-                    let x = p.map(i, 0, cubeLength, -100, 100);
-                    let y = p.map(j, 0, cubeLength, -100, 100);
-                    let z = p.map(k, 0, cubeLength, -100, 100);
-                    p.point(x, y, z);
+                    let x = p.map(i, 0, cubeLength, -1, 1);
+                    let y = p.map(j, 0, cubeLength, -1, 1);
+                    let z = p.map(k, 0, cubeLength, -1, 1);
+
+                    let zeta = new p5.Vector(0, 0, 0);
+                    let iteration = 0;
+
+                    while (true) {
+                        let sphericalZeta = convertToSphericalCoordinate(zeta.x, zeta.y, zeta.z);
+                        let newX = Math.pow(sphericalZeta.distanceFromOrigin, n) * Math.sin(sphericalZeta.thetaAngle * n) * Math.cos(sphericalZeta.phiAngle * n);
+                        let newY = Math.pow(sphericalZeta.distanceFromOrigin, n) * Math.sin(sphericalZeta.thetaAngle * n) * Math.sin(sphericalZeta.phiAngle * n);
+                        let newZ = Math.pow(sphericalZeta.distanceFromOrigin, n) * Math.cos(sphericalZeta.thetaAngle * n);
+
+                        zeta.x = newX + x;
+                        zeta.y = newY + y;
+                        zeta.z = newZ + z;
+                        if (sphericalZeta.distanceFromOrigin > 2) {
+                            break;
+                        }
+                        if (iteration > maxIterations) {
+                            p.point(x * 100, y * 100, z * 100);
+                            break;
+                        }
+                        iteration++;
+                    }
                 }
             }
         }
