@@ -3,14 +3,16 @@ import p5 from 'p5';
 class Star {
     x: number;
     y: number;
-    z: number
+    z: number;
+    speed: number = 10;
+
     constructor(p: p5) {
         this.setRandomXY(p);
         this.z = p.random(p.width);
     }
 
     update(p: p5) {
-        this.z = this.z - 1;
+        this.z = this.z - this.speed;
         if (this.z < 1) {
             this.z = p.width;
             this.setRandomXY(p);
@@ -27,7 +29,8 @@ class Star {
         p.noStroke();
         let sx = p.map(this.x / this.z, 0, 1, 0, p.width);
         let sy = p.map(this.y / this.z, 0, 1, 0, p.height);
-        p.ellipse(sx, sy, 8, 8);
+        let size = p.map(this.z, 0, p.width, 16, 0);
+        p.ellipse(sx, sy, size, size);
     }
 }
 
@@ -48,7 +51,7 @@ let sketch = function (p: p5) {
         }
     }
     p.draw = function () {
-        p.background(0);
+        p.background(0, 0, 0, 33);
         p.translate(p.width * 0.5, p.height * 0.5);
         for (let i = 0; i < stars.length; i++) {
             stars[i].update(p);
