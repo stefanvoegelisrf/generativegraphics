@@ -64,7 +64,7 @@ let sketch = function (p: p5) {
                         if (iteration > maxIterations) {
                             if (!edge) {
                                 edge = true;
-                                mandelBulbPoints.push(p.createVector(x * 100, y * 100, z * 100));
+                                mandelBulbPoints.push(p.createVector(x * 200, y * 200, z * 200));
                             }
                             break;
                         }
