@@ -8,7 +8,6 @@ class Grid {
         this.width = width;
         this.height = height;
         this.grid = new Array(width * height).fill(null);
-        console.log(`Initializing grid with size ${width} x ${height}`)
     }
 
     // Allow us to clear the canvas
@@ -70,23 +69,27 @@ let sketch = function (p: p5) {
     let background = p.color(0, 0, 0);
     let SAND_COLOR = p.color(34, 35, 100);
     let grid = new Grid();
+    let blockSize = 10;
     const setCanvasSize = function () {
         let factorSize = 0.9;
         let squareLength = (p.windowWidth < p.windowHeight ? p.windowWidth : p.windowHeight) * factorSize;
-        squareLength = Math.floor(squareLength);
+        let rest = squareLength % 10;
+        squareLength = squareLength - rest;
         console.log(`Setting canvas size to ${squareLength}`)
         p.resizeCanvas(squareLength, squareLength);
-        grid.initialize(squareLength, squareLength)
+        let gridLength = squareLength / blockSize;
+        console.log(`Setting grid length to ${gridLength}`)
+        grid.initialize(gridLength, gridLength)
     }
 
     p.mouseDragged = function () {
         if (p.mouseX < 0 || p.mouseY < 0 || p.mouseX > p.width || p.mouseY > p.height)
             return;
         let color = varyColor(p, SAND_COLOR);
-        let x = Math.floor(p.mouseX);
-        let y = Math.floor(p.mouseY);
+        let x = Math.floor(p.mouseX / blockSize);
+        let y = Math.floor(p.mouseY / blockSize);
         console.log(`Setting color ${p.hue(color)},${p.saturation(color)},${p.lightness(color)} at ${x}, ${y}`);
-        grid.set(Math.floor(p.mouseX), Math.floor(p.mouseY), color);
+        grid.set(x, y, color);
     }
 
     p.setup = function () {
@@ -94,18 +97,24 @@ let sketch = function (p: p5) {
         p.colorMode(p.HSL, 100);
         p.createCanvas(500, 500);
         setCanvasSize();
+        p.noStroke();
     }
     p.draw = function () {
+        p.background(0);
         // This happens every frame
-        p.loadPixels();
+        // p.loadPixels();
         for (let index = 0; index < grid.grid.length; index++) {
             let colorToSet = grid.grid[index] != null ? grid.grid[index] : background;
-            p.pixels[index * 4] = p.hue(colorToSet);
-            p.pixels[index * 4 + 1] = p.saturation(colorToSet);
-            p.pixels[index * 4 + 2] = p.lightness(colorToSet);
-            p.pixels[index * 4 + 3] = p.alpha(colorToSet);
+            // p.pixels[index * 4] = p.hue(colorToSet);
+            // p.pixels[index * 4 + 1] = p.saturation(colorToSet);
+            // p.pixels[index * 4 + 2] = p.lightness(colorToSet);
+            // p.pixels[index * 4 + 3] = p.alpha(colorToSet);
+            p.fill(colorToSet);
+            let y = Math.floor(index / grid.width) * blockSize;
+            let x = index % grid.width * blockSize;
+            p.square(x, y, blockSize);
         }
-        p.updatePixels();
+        // p.updatePixels();
         grid.update();
     }
     p.windowResized = function () {
