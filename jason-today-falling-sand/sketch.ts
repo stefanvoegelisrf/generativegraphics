@@ -75,10 +75,8 @@ let sketch = function (p: p5) {
         let squareLength = (p.windowWidth < p.windowHeight ? p.windowWidth : p.windowHeight) * factorSize;
         let rest = squareLength % 10;
         squareLength = squareLength - rest;
-        console.log(`Setting canvas size to ${squareLength}`)
         p.resizeCanvas(squareLength, squareLength);
         let gridLength = squareLength / blockSize;
-        console.log(`Setting grid length to ${gridLength}`)
         grid.initialize(gridLength, gridLength)
     }
 
@@ -88,7 +86,6 @@ let sketch = function (p: p5) {
         let color = varyColor(p, SAND_COLOR);
         let x = Math.floor(p.mouseX / blockSize);
         let y = Math.floor(p.mouseY / blockSize);
-        console.log(`Setting color ${p.hue(color)},${p.saturation(color)},${p.lightness(color)} at ${x}, ${y}`);
         grid.set(x, y, color);
     }
 
