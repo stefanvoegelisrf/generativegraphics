@@ -12,3 +12,5 @@ A voronoi is the center of the circle that is drawn when doing the delaunay tria
 ## Relaxing a voronoi
 
 ## Using d3 to help
+
+## Sweep algorithm
