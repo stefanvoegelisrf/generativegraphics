@@ -12,12 +12,8 @@ let sketch = function (p: p5) {
         squareLength = Math.floor(squareLength);
         if (squareLength === previousSquareLength)
             return;
-        randomPoints = new Array(amountOfPoints);
-        for (let i = 0; i < amountOfPoints; i += 2) {
-            randomPoints[i] = p.random(0, squareLength);
-            randomPoints[i + 1] = p.random(0, squareLength);
-        }
-        delaunay = new d3.Delaunay(randomPoints);
+        calculatePoints();
+        calculateDelaunay();
         p.resizeCanvas(squareLength, squareLength);
         previousSquareLength = squareLength;
     }
@@ -32,6 +28,35 @@ let sketch = function (p: p5) {
         // drawDelaunayTriangles();
         drawPoints();
         drawVoronoiDiagram();
+        calculateDelaunay();
+    }
+
+    let calculateDelaunay = function () {
+        delaunay = new d3.Delaunay(randomPoints);
+    }
+
+    let calculatePoints = function () {
+        randomPoints = new Array(amountOfPoints);
+        for (let i = 0; i < amountOfPoints; i += 2) {
+            randomPoints[i] = p.random(0, p.width);
+            randomPoints[i + 1] = p.random(0, p.height);
+        }
+    }
+
+    let movePointsClockwise = function () {
+        let sinValue = p.sin(p.frameCount * 0.01);
+        let cosValue = p.cos(p.frameCount * 0.01);
+        for (let i = 0; i < randomPoints.length; i += 2) {
+            randomPoints[i] += sinValue;
+            randomPoints[i + 1] += cosValue;
+        }
+    }
+
+    let movePointsRandomly = function (min: number, max: number) {
+        for (let i = 0; i < randomPoints.length; i += 2) {
+            randomPoints[i] += p.random(min, max);
+            randomPoints[i + 1] += p.random(min, max);
+        }
     }
 
     let drawVoronoiDiagram = function () {
