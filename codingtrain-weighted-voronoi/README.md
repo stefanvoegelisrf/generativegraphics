@@ -6,8 +6,8 @@ With the delaunay triangulation, we are connecting a set of points with triangle
 
 ![Image showing the difference when triangles connected according to delaunay and not according to delaunay](images/delaunay-not-delaunay.svg)
 
-## What is a voronoi?
-A voronoi is the center of the circle that is drawn when doing the delaunay triangulation.
+## What is a voronoi diagram?
+A voronoi diagram is a set of polygons. These polygons are defined by the set of points. The area of the polygons is defined by the space that is closest to the point. The edges of the voronoi diagram are the center of the circle that is drawn when doing the delaunay triangulation.
 
 ## Relaxing a voronoi
 

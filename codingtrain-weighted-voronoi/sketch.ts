@@ -1,4 +1,4 @@
-import p5, { Vector } from 'p5';
+import p5 from 'p5';
 import * as d3 from 'd3-delaunay';
 
 let sketch = function (p: p5) {
@@ -24,15 +24,43 @@ let sketch = function (p: p5) {
 
     p.setup = function () {
         p.createCanvas(500, 500);
+        p.randomSeed(0);
         setCanvasSize();
     }
     p.draw = function () {
         p.background(255);
+        // drawDelaunayTriangles();
+        drawPoints();
+        drawVoronoiDiagram();
+    }
+
+    let drawVoronoiDiagram = function () {
+        let voronoi = delaunay.voronoi([0, 0, p.width, p.height]);
+        let polygons = voronoi.cellPolygons();
+        p.stroke(0);
+        p.strokeWeight(1);
+        p.noFill();
+        for (let polygon of polygons) {
+            p.beginShape();
+            for (let i = 0; i < polygon.length; i++) {
+                p.vertex(polygon[i][0], polygon[i][1]);
+            }
+            p.endShape(p.CLOSE);
+
+        }
+
+    }
+
+    let drawPoints = function () {
         p.stroke(0);
         p.strokeWeight(4);
         for (let i = 0; i < randomPoints.length; i += 2) {
             p.point(randomPoints[i], randomPoints[i + 1]);
         }
+    }
+
+    let drawDelaunayTriangles = function () {
+        p.stroke(0);
         p.noFill();
         p.strokeWeight(1);
         for (let i = 0; i < delaunay.triangles.length; i += 3) {
