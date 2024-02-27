@@ -35,12 +35,12 @@ function setup() {
     engine = Engine.create();
     world = engine.world;
     Runner.run(engine);
-    ground = Bodies.rectangle(200, height, width, 10, { isStatic: true });
+    ground = Bodies.rectangle(200, height, width, 20, { isStatic: true });
     Composite.add(world, ground);
 }
 
 function mousePressed() {
-    let newBox = new CustomBox(mouseX, mouseY, 20, 20);
+    let newBox = new CustomBox(mouseX, mouseY, random(20, 40), random(20, 40));
     boxes.push(newBox);
 }
 
