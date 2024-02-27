@@ -14,3 +14,5 @@ A voronoi diagram is a set of polygons. These polygons are defined by the set of
 ## Using d3 to help
 
 ## Sweep algorithm
+
+## Lloyds algorithm

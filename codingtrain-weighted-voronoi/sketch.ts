@@ -6,6 +6,7 @@ let sketch = function (p: p5) {
     let amountOfPoints = 100;
     let previousSquareLength = 0;
     let delaunay: d3.Delaunay<number>;
+    let voronoi: d3.Voronoi<number>;
     const setCanvasSize = function () {
         let factorSize = 0.9;
         let squareLength = (p.windowWidth < p.windowHeight ? p.windowWidth : p.windowHeight) * factorSize;
@@ -14,6 +15,7 @@ let sketch = function (p: p5) {
             return;
         calculatePoints();
         calculateDelaunay();
+        calculateVoronoi();
         p.resizeCanvas(squareLength, squareLength);
         previousSquareLength = squareLength;
     }
@@ -25,14 +27,16 @@ let sketch = function (p: p5) {
     }
     p.draw = function () {
         p.background(255);
-        // drawDelaunayTriangles();
         drawPoints();
         drawVoronoiDiagram();
-        calculateDelaunay();
     }
 
     let calculateDelaunay = function () {
         delaunay = new d3.Delaunay(randomPoints);
+    }
+
+    let calculateVoronoi = function () {
+        voronoi = delaunay.voronoi([0, 0, p.width, p.height]);
     }
 
     let calculatePoints = function () {
@@ -60,25 +64,41 @@ let sketch = function (p: p5) {
     }
 
     let drawVoronoiDiagram = function () {
-        let voronoi = delaunay.voronoi([0, 0, p.width, p.height]);
         let polygons = voronoi.cellPolygons();
+        let cells = Array.from(polygons);
         p.stroke(0);
         p.strokeWeight(1);
         p.noFill();
-        for (let polygon of polygons) {
+        // Draw the polygons of the voronoi diagram
+        for (let polygon of cells) {
             p.beginShape();
             for (let i = 0; i < polygon.length; i++) {
                 p.vertex(polygon[i][0], polygon[i][1]);
             }
             p.endShape(p.CLOSE);
-
         }
 
+        for (let polygon of cells) {
+            let centroid = p.createVector(0, 0);
+            let area=calculateAreaOfPolygon(polygon);
+            for (let i = 0; i < polygon.length; i++) {
+                centroid.x += polygon[i][0];
+                centroid.y += polygon[i][1];
+            }
+            centroid.div(polygon.length);
+            p.stroke(255, 0, 0);
+            p.strokeWeight(4);
+            p.point(centroid.x, centroid.y);
+        }
+    }
+
+    let calculateAreaOfPolygon = function (polygon: d3.Delaunay.Polygon) {
     }
 
     let drawPoints = function () {
         p.stroke(0);
         p.strokeWeight(4);
+        // Draw the random points
         for (let i = 0; i < randomPoints.length; i += 2) {
             p.point(randomPoints[i], randomPoints[i + 1]);
         }
