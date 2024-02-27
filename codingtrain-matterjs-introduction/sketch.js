@@ -7,11 +7,12 @@ var Engine = Matter.Engine,
 
 var engine;
 var world;
-var testBox;
+var boxes = [];
+var ground;
 
 class CustomBox {
     constructor(x, y, width, height) {
-        this.body = Bodies.rectangle(x, y, width, height);
+        this.body = Bodies.rectangle(x, y, width, height, { friction: 0.5, restitution: 1, airFriction: 0 });
         this.width = width;
         this.height = height;
         Composite.add(world, this.body);
@@ -22,6 +23,7 @@ class CustomBox {
         push();
         translate(pos.x, pos.y);
         rotate(angle);
+        rectMode(CENTER);
         rect(0, 0, this.width, this.height);
         pop();
 
@@ -32,12 +34,19 @@ function setup() {
     createCanvas(400, 400);
     engine = Engine.create();
     world = engine.world;
-    testBox = new CustomBox(200, 200, 80, 80);
-    Composite.add(world, testBox);
     Runner.run(engine);
+    ground = Bodies.rectangle(200, height, width, 10, { isStatic: true });
+    Composite.add(world, ground);
+}
+
+function mousePressed() {
+    let newBox = new CustomBox(mouseX, mouseY, 20, 20);
+    boxes.push(newBox);
 }
 
 function draw() {
     background(220);
-    testBox.show();
+    for (let customBox of boxes) {
+        customBox.show();
+    }
 }
