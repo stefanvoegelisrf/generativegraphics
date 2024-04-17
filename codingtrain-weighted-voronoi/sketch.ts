@@ -3,7 +3,7 @@ import * as d3 from 'd3-delaunay';
 
 let sketch = function (p5Library: p5) {
     let randomPoints: Vector[] = [];
-    let amountOfPoints = 1000;
+    let amountOfPoints = 10000;
     let previousSquareLength = 0;
     let stefanPortrait: p5.Image;
 
@@ -12,7 +12,6 @@ let sketch = function (p5Library: p5) {
             stefanPortrait = img;
         });
     }
-
 
     p5Library.setup = function () {
         p5Library.frameRate(30);
@@ -120,11 +119,12 @@ let sketch = function (p5Library: p5) {
         }
 
         for (let i = 0; i < randomPoints.length; i++) {
-            randomPoints[i].lerp(centroids[i], 1);
+            randomPoints[i].lerp(centroids[i], 0.1);
         }
         let maxWeight = Math.max(...weights);
         for (let i = 0; i < randomPoints.length; i++) {
-            p5Library.stroke(0);
+            let mappedColorValue = p5Library.map(weights[i], 0, maxWeight, 0, 255);
+            p5Library.stroke(mappedColorValue);
             p5Library.strokeWeight(p5Library.map(weights[i], 0, maxWeight, 0, 5));
             p5Library.point(randomPoints[i].x, randomPoints[i].y);
         }
