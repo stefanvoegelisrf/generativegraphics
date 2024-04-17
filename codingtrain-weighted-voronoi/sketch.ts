@@ -3,7 +3,7 @@ import * as d3 from 'd3-delaunay';
 
 let sketch = function (p5Library: p5) {
     let randomPoints: Vector[];
-    let amountOfPoints = 200;
+    let amountOfPoints = 500;
     let previousSquareLength = 0;
 
     const setCanvasSize = function () {
@@ -36,10 +36,18 @@ let sketch = function (p5Library: p5) {
 
     const drawCellPolygons = function (cells: d3.Delaunay.Polygon[]) {
         p5Library.push();
-        p5Library.stroke(0);
+        // p5Library.stroke(0);
+        p5Library.noStroke();
         p5Library.strokeWeight(1);
-        p5Library.noFill();
         for (let polygon of cells) {
+            let maxX = 0;
+            polygon.find((element) => { maxX = Math.max(maxX, element[0]) });
+            let maxY = 0;
+            polygon.find((element) => { maxY = Math.max(maxY, element[1]) });
+            let additionValue = p5Library.millis() * 0.0005;
+            let noiseValue = p5Library.noise(maxX * 0.1 + additionValue, maxY * 0.1 + additionValue)
+            let color = p5Library.color(noiseValue * 100, noiseValue * 255, noiseValue * 255);
+            p5Library.fill(color);
             p5Library.beginShape();
             for (let i = 0; i < polygon.length; i++) {
                 p5Library.vertex(polygon[i][0], polygon[i][1]);
@@ -80,26 +88,19 @@ let sketch = function (p5Library: p5) {
         const cells = Array.from(polygons);
         drawCellPolygons(cells);
         const centroids = calculateCentroids(cells);
+        centroids.forEach((centroid) => {
+            centroid.add(p5Library.random(-10, 10), p5Library.random(-10, 10));
+        });
 
         for (let i = 0; i < randomPoints.length; i++) {
-            randomPoints[i].lerp(centroids[i], 0.01);
+            randomPoints[i].lerp(centroids[i], 0.001);
         }
 
         for (let i = 0; i < randomPoints.length; i++) {
             p5Library.stroke(0);
             p5Library.strokeWeight(4);
-            p5Library.point(randomPoints[i].x, randomPoints[i].y);
+            // p5Library.point(randomPoints[i].x, randomPoints[i].y);
         }
-
-        for (let centroid of centroids) {
-            p5Library.stroke(255, 0, 0);
-            p5Library.strokeWeight(4);
-            p5Library.point(centroid.x, centroid.y);
-        }
-    }
-
-    let lerp = function (start: number, end: number, amount: number) {
-        return (1 - amount) * start + amount * end;
     }
 
     p5Library.windowResized = function () {
