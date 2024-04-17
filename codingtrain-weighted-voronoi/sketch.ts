@@ -2,9 +2,10 @@ import p5, { Vector } from 'p5';
 import * as d3 from 'd3-delaunay';
 
 let sketch = function (p5Library: p5) {
-    let randomPoints: Vector[];
-    let amountOfPoints = 500;
+    let randomPoints: Vector[] = [];
+    let amountOfPoints = 20000;
     let previousSquareLength = 0;
+    let stefanPortrait: p5.Image;
 
     const setCanvasSize = function () {
         let factorSize = 0.9;
@@ -22,32 +23,47 @@ let sketch = function (p5Library: p5) {
         }
     }
 
-    p5Library.setup = function () {
-        setCanvasSize();
-        p5Library.createCanvas(previousSquareLength, previousSquareLength);
-        p5Library.randomSeed(0);
-        generateRandomPoints();
+    p5Library.preload = function () {
+        p5Library.loadImage('./images/20220629_Portrait_SRF-122_edit.png', (img) => {
+            stefanPortrait = img;
+
+        });
     }
 
+
+    p5Library.setup = function () {
+        p5Library.frameRate(30);
+        // setCanvasSize();
+        // p5Library.createCanvas(previousSquareLength, previousSquareLength);
+        const ratio = stefanPortrait.height / window.innerHeight * 1.1;
+        p5Library.createCanvas(stefanPortrait.width / ratio, stefanPortrait.height / ratio);
+        // p5Library.image(stefanPortrait, 0, 0, stefanPortrait.width / ratio, stefanPortrait.height / ratio);
+        for (let i = 0; i < amountOfPoints; i++) {
+            let x = p5Library.random(stefanPortrait.width);
+            let y = p5Library.random(stefanPortrait.height);
+            let color = stefanPortrait.get(x, y);
+            if (p5Library.alpha(color) > 100 && p5Library.random(10,100) > p5Library.brightness(color)) {
+                randomPoints.push(p5Library.createVector(x / ratio, y / ratio));
+            }
+            else {
+                i--;
+            }
+        }
+        p5Library.randomSeed(0);
+
+        // generateRandomPoints();
+
+        // p5Library.noLoop();
+    }
     p5Library.draw = function () {
-        p5Library.background(255);
         drawVoronoiDiagram();
     }
 
     const drawCellPolygons = function (cells: d3.Delaunay.Polygon[]) {
         p5Library.push();
-        // p5Library.stroke(0);
-        p5Library.noStroke();
+        p5Library.stroke(0);
         p5Library.strokeWeight(1);
         for (let polygon of cells) {
-            let maxX = 0;
-            polygon.find((element) => { maxX = Math.max(maxX, element[0]) });
-            let maxY = 0;
-            polygon.find((element) => { maxY = Math.max(maxY, element[1]) });
-            let additionValue = p5Library.millis() * 0.0005;
-            let noiseValue = p5Library.noise(maxX * 0.1 + additionValue, maxY * 0.1 + additionValue)
-            let color = p5Library.color(noiseValue * 100, noiseValue * 255, noiseValue * 255);
-            p5Library.fill(color);
             p5Library.beginShape();
             for (let i = 0; i < polygon.length; i++) {
                 p5Library.vertex(polygon[i][0], polygon[i][1]);
@@ -88,25 +104,22 @@ let sketch = function (p5Library: p5) {
         const cells = Array.from(polygons);
         drawCellPolygons(cells);
         const centroids = calculateCentroids(cells);
-        centroids.forEach((centroid) => {
-            centroid.add(p5Library.random(-10, 10), p5Library.random(-10, 10));
-        });
 
         for (let i = 0; i < randomPoints.length; i++) {
-            randomPoints[i].lerp(centroids[i], 0.001);
+            randomPoints[i].lerp(centroids[i], 0.1);
         }
 
         for (let i = 0; i < randomPoints.length; i++) {
             p5Library.stroke(0);
             p5Library.strokeWeight(4);
-            // p5Library.point(randomPoints[i].x, randomPoints[i].y);
+            p5Library.point(randomPoints[i].x, randomPoints[i].y);
         }
     }
 
     p5Library.windowResized = function () {
-        setCanvasSize();
-        p5Library.resizeCanvas(previousSquareLength, previousSquareLength);
-        generateRandomPoints();
+        // setCanvasSize();
+        // p5Library.resizeCanvas(previousSquareLength, previousSquareLength);
+        // generateRandomPoints();
     }
 }
 let instantiatedSketch = new p5(sketch);
