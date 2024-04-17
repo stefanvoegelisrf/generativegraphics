@@ -3,30 +3,13 @@ import * as d3 from 'd3-delaunay';
 
 let sketch = function (p5Library: p5) {
     let randomPoints: Vector[] = [];
-    let amountOfPoints = 20000;
+    let amountOfPoints = 1000;
     let previousSquareLength = 0;
     let stefanPortrait: p5.Image;
 
-    const setCanvasSize = function () {
-        let factorSize = 0.9;
-        let squareLength = (p5Library.windowWidth < p5Library.windowHeight ? p5Library.windowWidth : p5Library.windowHeight) * factorSize;
-        squareLength = Math.floor(squareLength);
-        if (squareLength === previousSquareLength)
-            return;
-        previousSquareLength = squareLength;
-    }
-
-    const generateRandomPoints = function () {
-        randomPoints = new Array(amountOfPoints);
-        for (let i = 0; i < randomPoints.length; i++) {
-            randomPoints[i] = p5Library.createVector(p5Library.random(0, p5Library.width), p5Library.random(0, p5Library.height));
-        }
-    }
-
     p5Library.preload = function () {
-        p5Library.loadImage('./images/20220629_Portrait_SRF-122_edit.png', (img) => {
+        p5Library.loadImage('./images/20220629_Portrait_SRF-122_edit_scaled.png', (img) => {
             stefanPortrait = img;
-
         });
     }
 
@@ -35,27 +18,27 @@ let sketch = function (p5Library: p5) {
         p5Library.frameRate(30);
         // setCanvasSize();
         // p5Library.createCanvas(previousSquareLength, previousSquareLength);
-        const ratio = stefanPortrait.height / window.innerHeight * 1.1;
-        p5Library.createCanvas(stefanPortrait.width / ratio, stefanPortrait.height / ratio);
-        // p5Library.image(stefanPortrait, 0, 0, stefanPortrait.width / ratio, stefanPortrait.height / ratio);
+        p5Library.createCanvas(stefanPortrait.width, stefanPortrait.height)
         for (let i = 0; i < amountOfPoints; i++) {
             let x = p5Library.random(stefanPortrait.width);
             let y = p5Library.random(stefanPortrait.height);
             let color = stefanPortrait.get(x, y);
-            if (p5Library.alpha(color) > 100 && p5Library.random(10,100) > p5Library.brightness(color)) {
-                randomPoints.push(p5Library.createVector(x / ratio, y / ratio));
+            if (p5Library.alpha(color) > 100 && p5Library.random(10, 100) > p5Library.brightness(color)) {
+                randomPoints.push(p5Library.createVector(x, y));
             }
             else {
                 i--;
             }
         }
         p5Library.randomSeed(0);
+        drawVoronoiDiagram();
 
         // generateRandomPoints();
 
         // p5Library.noLoop();
     }
     p5Library.draw = function () {
+        p5Library.background(255);
         drawVoronoiDiagram();
     }
 
@@ -102,16 +85,47 @@ let sketch = function (p5Library: p5) {
         const voronoi = delaunay.voronoi([0, 0, p5Library.width, p5Library.height]);
         const polygons = voronoi.cellPolygons();
         const cells = Array.from(polygons);
-        drawCellPolygons(cells);
-        const centroids = calculateCentroids(cells);
+        // drawCellPolygons(cells);
+        // const centroids = calculateCentroids(cells);
+        const centroids = new Array(cells.length);
+        for (let i = 0; i < centroids.length; i++) {
+            centroids[i] = new p5.Vector(0, 0);
+        }
 
-        for (let i = 0; i < randomPoints.length; i++) {
-            randomPoints[i].lerp(centroids[i], 0.1);
+        const weights = new Array(cells.length).fill(0);
+        let delaunayIndex = 0;
+        stefanPortrait.loadPixels();
+        for (let x = 0; x < p5Library.width; x++) {
+            for (let y = 0; y < p5Library.height; y++) {
+                const index = (x + y * p5Library.width) * 4;
+                const color = (stefanPortrait.pixels[index + 0] + stefanPortrait.pixels[index + 1] + stefanPortrait.pixels[index + 2]) / 3;
+                let weight = 1 - color / 255;
+                if (stefanPortrait.pixels[index + 3] < 100) {
+                    weight = 0;
+                }
+                delaunayIndex = delaunay.find(x, y, delaunayIndex);
+                centroids[delaunayIndex].x += x * weight;
+                centroids[delaunayIndex].y += y * weight;
+                weights[delaunayIndex] += weight;
+            }
+        }
+
+        for (let i = 0; i < centroids.length; i++) {
+            if (weights[i] > 0) {
+                centroids[i].div(weights[i]);
+            }
+            else {
+                centroids[i] = randomPoints[i].copy();
+            }
         }
 
         for (let i = 0; i < randomPoints.length; i++) {
+            randomPoints[i].lerp(centroids[i], 1);
+        }
+        let maxWeight = Math.max(...weights);
+        for (let i = 0; i < randomPoints.length; i++) {
             p5Library.stroke(0);
-            p5Library.strokeWeight(4);
+            p5Library.strokeWeight(p5Library.map(weights[i], 0, maxWeight, 0, 5));
             p5Library.point(randomPoints[i].x, randomPoints[i].y);
         }
     }
