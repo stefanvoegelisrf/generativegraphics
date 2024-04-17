@@ -1,126 +1,111 @@
-import p5 from 'p5';
+import p5, { Vector } from 'p5';
 import * as d3 from 'd3-delaunay';
 
-let sketch = function (p: p5) {
-    let randomPoints: number[];
-    let amountOfPoints = 100;
+let sketch = function (p5Library: p5) {
+    let randomPoints: Vector[];
+    let amountOfPoints = 200;
     let previousSquareLength = 0;
-    let delaunay: d3.Delaunay<number>;
-    let voronoi: d3.Voronoi<number>;
+
     const setCanvasSize = function () {
         let factorSize = 0.9;
-        let squareLength = (p.windowWidth < p.windowHeight ? p.windowWidth : p.windowHeight) * factorSize;
+        let squareLength = (p5Library.windowWidth < p5Library.windowHeight ? p5Library.windowWidth : p5Library.windowHeight) * factorSize;
         squareLength = Math.floor(squareLength);
         if (squareLength === previousSquareLength)
             return;
-        calculatePoints();
-        calculateDelaunay();
-        calculateVoronoi();
-        p.resizeCanvas(squareLength, squareLength);
         previousSquareLength = squareLength;
     }
 
-    p.setup = function () {
-        p.createCanvas(500, 500);
-        p.randomSeed(0);
-        setCanvasSize();
+    const generateRandomPoints = function () {
+        randomPoints = new Array(amountOfPoints);
+        for (let i = 0; i < randomPoints.length; i++) {
+            randomPoints[i] = p5Library.createVector(p5Library.random(0, p5Library.width), p5Library.random(0, p5Library.height));
+        }
     }
-    p.draw = function () {
-        p.background(255);
-        drawPoints();
+
+    p5Library.setup = function () {
+        setCanvasSize();
+        p5Library.createCanvas(previousSquareLength, previousSquareLength);
+        p5Library.randomSeed(0);
+        generateRandomPoints();
+    }
+
+    p5Library.draw = function () {
+        p5Library.background(255);
         drawVoronoiDiagram();
     }
 
-    let calculateDelaunay = function () {
-        delaunay = new d3.Delaunay(randomPoints);
-    }
-
-    let calculateVoronoi = function () {
-        voronoi = delaunay.voronoi([0, 0, p.width, p.height]);
-    }
-
-    let calculatePoints = function () {
-        randomPoints = new Array(amountOfPoints);
-        for (let i = 0; i < amountOfPoints; i += 2) {
-            randomPoints[i] = p.random(0, p.width);
-            randomPoints[i + 1] = p.random(0, p.height);
-        }
-    }
-
-    let movePointsClockwise = function () {
-        let sinValue = p.sin(p.frameCount * 0.01);
-        let cosValue = p.cos(p.frameCount * 0.01);
-        for (let i = 0; i < randomPoints.length; i += 2) {
-            randomPoints[i] += sinValue;
-            randomPoints[i + 1] += cosValue;
-        }
-    }
-
-    let movePointsRandomly = function (min: number, max: number) {
-        for (let i = 0; i < randomPoints.length; i += 2) {
-            randomPoints[i] += p.random(min, max);
-            randomPoints[i + 1] += p.random(min, max);
-        }
-    }
-
-    let drawVoronoiDiagram = function () {
-        let polygons = voronoi.cellPolygons();
-        let cells = Array.from(polygons);
-        p.stroke(0);
-        p.strokeWeight(1);
-        p.noFill();
-        // Draw the polygons of the voronoi diagram
+    const drawCellPolygons = function (cells: d3.Delaunay.Polygon[]) {
+        p5Library.push();
+        p5Library.stroke(0);
+        p5Library.strokeWeight(1);
+        p5Library.noFill();
         for (let polygon of cells) {
-            p.beginShape();
+            p5Library.beginShape();
             for (let i = 0; i < polygon.length; i++) {
-                p.vertex(polygon[i][0], polygon[i][1]);
+                p5Library.vertex(polygon[i][0], polygon[i][1]);
             }
-            p.endShape(p.CLOSE);
+            p5Library.endShape(p5Library.CLOSE);
         }
+        p5Library.pop();
+    }
 
+    const calculateCentroids = function (cells: d3.Delaunay.Polygon[]): Vector[] {
+        const centroids: Vector[] = [];
         for (let polygon of cells) {
-            let centroid = p.createVector(0, 0);
-            let area=calculateAreaOfPolygon(polygon);
+            let area = 0;
+            const centroid = p5Library.createVector(0, 0);
             for (let i = 0; i < polygon.length; i++) {
-                centroid.x += polygon[i][0];
-                centroid.y += polygon[i][1];
+                const vertex1 = polygon[i];
+                const vertex2 = polygon[(i + 1) % polygon.length];
+                const crossProduct = vertex1[0] * vertex2[1] - vertex2[0] * vertex1[1];
+                area += crossProduct;
+                centroid.x += (vertex1[0] + vertex2[0]) * crossProduct;
+                centroid.y += (vertex1[1] + vertex2[1]) * crossProduct;
             }
-            centroid.div(polygon.length);
-            p.stroke(255, 0, 0);
-            p.strokeWeight(4);
-            p.point(centroid.x, centroid.y);
+            area /= 2;
+            centroid.div(6 * area);
+            centroids.push(centroid);
+        }
+        return centroids;
+    }
+
+    const drawVoronoiDiagram = function () {
+        let points: number[] = [];
+        for (let i = 0; i < randomPoints.length; i++) {
+            points.push(randomPoints[i].x, randomPoints[i].y);
+        }
+        const delaunay = new d3.Delaunay(points);
+        const voronoi = delaunay.voronoi([0, 0, p5Library.width, p5Library.height]);
+        const polygons = voronoi.cellPolygons();
+        const cells = Array.from(polygons);
+        drawCellPolygons(cells);
+        const centroids = calculateCentroids(cells);
+
+        for (let i = 0; i < randomPoints.length; i++) {
+            randomPoints[i].lerp(centroids[i], 0.01);
+        }
+
+        for (let i = 0; i < randomPoints.length; i++) {
+            p5Library.stroke(0);
+            p5Library.strokeWeight(4);
+            p5Library.point(randomPoints[i].x, randomPoints[i].y);
+        }
+
+        for (let centroid of centroids) {
+            p5Library.stroke(255, 0, 0);
+            p5Library.strokeWeight(4);
+            p5Library.point(centroid.x, centroid.y);
         }
     }
 
-    let calculateAreaOfPolygon = function (polygon: d3.Delaunay.Polygon) {
+    let lerp = function (start: number, end: number, amount: number) {
+        return (1 - amount) * start + amount * end;
     }
 
-    let drawPoints = function () {
-        p.stroke(0);
-        p.strokeWeight(4);
-        // Draw the random points
-        for (let i = 0; i < randomPoints.length; i += 2) {
-            p.point(randomPoints[i], randomPoints[i + 1]);
-        }
-    }
-
-    let drawDelaunayTriangles = function () {
-        p.stroke(0);
-        p.noFill();
-        p.strokeWeight(1);
-        for (let i = 0; i < delaunay.triangles.length; i += 3) {
-            let firstPoint = 2 * delaunay.triangles[i];
-            let secondPoint = 2 * delaunay.triangles[i + 1];
-            let thirdPoint = 2 * delaunay.triangles[i + 2];
-            p.triangle(
-                delaunay.points[firstPoint], delaunay.points[firstPoint + 1],
-                delaunay.points[secondPoint], delaunay.points[secondPoint + 1],
-                delaunay.points[thirdPoint], delaunay.points[thirdPoint + 1]
-            );
-        }
-    }
-    p.windowResized = function () {
+    p5Library.windowResized = function () {
         setCanvasSize();
+        p5Library.resizeCanvas(previousSquareLength, previousSquareLength);
+        generateRandomPoints();
     }
 }
 let instantiatedSketch = new p5(sketch);
