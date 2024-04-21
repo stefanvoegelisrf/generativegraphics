@@ -4,7 +4,6 @@ import * as d3 from 'd3-delaunay';
 let sketch = function (p5Library: p5) {
     let randomPoints: Vector[] = [];
     let amountOfPoints = 10000;
-    let previousSquareLength = 0;
     let stefanPortrait: p5.Image;
 
     p5Library.preload = function () {
@@ -15,8 +14,6 @@ let sketch = function (p5Library: p5) {
 
     p5Library.setup = function () {
         p5Library.frameRate(30);
-        // setCanvasSize();
-        // p5Library.createCanvas(previousSquareLength, previousSquareLength);
         p5Library.createCanvas(stefanPortrait.width, stefanPortrait.height)
         for (let i = 0; i < amountOfPoints; i++) {
             let x = p5Library.random(stefanPortrait.width);
@@ -30,11 +27,6 @@ let sketch = function (p5Library: p5) {
             }
         }
         p5Library.randomSeed(0);
-        drawVoronoiDiagram();
-
-        // generateRandomPoints();
-
-        // p5Library.noLoop();
     }
     p5Library.draw = function () {
         p5Library.background(255);
@@ -85,7 +77,6 @@ let sketch = function (p5Library: p5) {
         const polygons = voronoi.cellPolygons();
         const cells = Array.from(polygons);
         // drawCellPolygons(cells);
-        // const centroids = calculateCentroids(cells);
         const centroids = new Array(cells.length);
         for (let i = 0; i < centroids.length; i++) {
             centroids[i] = new p5.Vector(0, 0);
@@ -97,8 +88,12 @@ let sketch = function (p5Library: p5) {
         for (let x = 0; x < p5Library.width; x++) {
             for (let y = 0; y < p5Library.height; y++) {
                 const index = (x + y * p5Library.width) * 4;
-                const color = (stefanPortrait.pixels[index + 0] + stefanPortrait.pixels[index + 1] + stefanPortrait.pixels[index + 2]) / 3;
-                let weight = 1 - color / 255;
+                const r = stefanPortrait.pixels[index + 0];
+                const g = stefanPortrait.pixels[index + 1];
+                const b = stefanPortrait.pixels[index + 2];
+                const color = (r + g + b) / 3;
+                const brightness = p5Library.saturation([r, g, b]);
+                let weight = brightness / 255;
                 if (stefanPortrait.pixels[index + 3] < 100) {
                     weight = 0;
                 }
@@ -125,15 +120,12 @@ let sketch = function (p5Library: p5) {
         for (let i = 0; i < randomPoints.length; i++) {
             let mappedColorValue = p5Library.map(weights[i], 0, maxWeight, 0, 255);
             p5Library.stroke(mappedColorValue);
-            p5Library.strokeWeight(p5Library.map(weights[i], 0, maxWeight, 0, 5));
+            p5Library.strokeWeight(p5Library.map(weights[i], 0, maxWeight, 1, 7));
             p5Library.point(randomPoints[i].x, randomPoints[i].y);
         }
     }
 
     p5Library.windowResized = function () {
-        // setCanvasSize();
-        // p5Library.resizeCanvas(previousSquareLength, previousSquareLength);
-        // generateRandomPoints();
     }
 }
 let instantiatedSketch = new p5(sketch);
