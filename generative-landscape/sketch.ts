@@ -3,14 +3,11 @@ import p5, { Vector } from 'p5';
 let sketch = function (p5Library: p5) {
     const imageWidth = 600;
     const imageHeight = 800;
-    p5Library.preload = function () {
-
-    }
 
     p5Library.setup = function () {
         p5Library.createCanvas(imageWidth, imageHeight)
         // Create random background color that is a shade of beige
-        const backgroundColor= p5Library.color(p5Library.random(230, 245), p5Library.random(218, 245), p5Library.random(166, 220));
+        const backgroundColor = p5Library.color(p5Library.random(230, 245), p5Library.random(218, 245), p5Library.random(166, 220));
         p5Library.background(backgroundColor);
         drawSun();
         drawBackgroundMountains();
@@ -28,15 +25,14 @@ let sketch = function (p5Library: p5) {
         // line is made up of points
         // line starts at 1 third of the canvas height and ends at 9/10 of the canvas height
         const mountainMiddleLine: p5.Vector[] = [];
-        const noiseScale = 0.02;
-        const mountainBase = imageHeight / 10 * 9.5;
+        const noiseScale = 0.01;
+        const mountainBase = imageHeight;
         const mountainTop = imageHeight / 3;
         const mountainHeight = mountainBase - mountainTop;
-        const mountainPoints = 100;
         const peakVariation = imageWidth / 3;
         const startX = p5Library.random(imageWidth / 3 - peakVariation / 2, imageWidth / 3 * 2 - peakVariation / 2);
-        for (let i = 0; i < mountainPoints; i++) {
-            const y = i / mountainPoints * mountainHeight + mountainTop;
+        for (let i = 0; i < mountainHeight; i++) {
+            const y = i + mountainTop;
             const x = p5Library.map(p5Library.noise(i * noiseScale), 0, 1, startX, startX + peakVariation);
             mountainMiddleLine.push(p5Library.createVector(x, y));
         }
@@ -53,6 +49,56 @@ let sketch = function (p5Library: p5) {
             p5Library.pop();
         }
         drawMiddleLine();
+
+        // draw mountains left and right of the middle line
+        // Start at the top point of the middleline and draw a mountain to the left and one to the right
+        // Then move down the middle line for about 1/10th of the line with a random offset
+        // Repeat until you reach the bottom of the middle line
+
+
+
+        const getNextPosition = function () {
+            let randomMin = 50;
+            let randomMax = 200;
+            return Math.floor(p5Library.random(randomMin, randomMax));
+        }
+        let currentPosition = 0;
+        while (currentPosition < mountainMiddleLine.length) {
+            console.log(currentPosition)
+            drawMountainHalf(currentPosition, mountainMiddleLine, "left");
+            drawMountainHalf(currentPosition, mountainMiddleLine, "right");
+            currentPosition += getNextPosition();
+        }
+    }
+
+
+    const getRandomMountainColor = function () {
+        const randomColor1 = p5Library.random(55, 220);
+        const randomColor2 = p5Library.random(55, 170);
+        const randomColor3 = p5Library.random(70, 150);
+        return [randomColor1, randomColor2, randomColor3];
+    }
+
+    const drawMountainHalf = function (startPosition: number, middleline: p5.Vector[], mountainDirection: "left" | "right") {
+        const noiseScale = 0.02;
+        const mountainColor = p5Library.color(getRandomMountainColor());
+        p5Library.push();
+        p5Library.stroke(mountainColor);
+        let position = startPosition;
+        let additionalXDistance = 0;
+        let endX = middleline[position].x;
+        let startX = middleline[position].x;
+        let y = middleline[position].y;
+        while (position < middleline.length) {
+            startX = middleline[position].x;
+            y = middleline[position].y;
+            const addDistance = p5Library.noise(y * noiseScale) * 5;
+            mountainDirection === "left" ? additionalXDistance -= addDistance : additionalXDistance += addDistance;
+            endX = startX + additionalXDistance;
+            p5Library.line(startX, y, endX, y);
+            position++;
+        }
+        p5Library.pop();
     }
 
     const drawSun = function () {
