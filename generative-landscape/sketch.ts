@@ -6,17 +6,22 @@ let sketch = function (p5Library: p5) {
 
     p5Library.setup = function () {
         p5Library.createCanvas(imageWidth, imageHeight)
-        // Create random background color that is a shade of beige
-        const backgroundColor = p5Library.color(p5Library.random(230, 245), p5Library.random(218, 245), p5Library.random(166, 220));
-        p5Library.background(backgroundColor);
-        drawSun();
-        drawBackgroundMountains();
-        drawForegroundMountains();
-        p5Library.randomSeed(0);
+        p5Library.frameRate(1);
     }
 
     const drawBackgroundMountains = function () {
-
+        p5Library.push();
+        const mountainCount = 3;
+        const start = 166;
+        for (let m = 1; m < mountainCount; m++) {
+            const mountainColor = getRandomMountainColor();
+            p5Library.stroke(mountainColor);
+            for (let x = 0; x < p5Library.width; x++) {
+                const y = start + m * 50 + p5Library.noise((x * m + p5Library.millis()) * 0.002) * 200;
+                p5Library.line(x, p5Library.height, x, y);
+            }
+        }
+        p5Library.pop();
     }
 
     const drawForegroundMountains = function () {
@@ -27,13 +32,13 @@ let sketch = function (p5Library: p5) {
         const mountainMiddleLine: p5.Vector[] = [];
         const noiseScale = 0.01;
         const mountainBase = imageHeight;
-        const mountainTop = imageHeight / 3;
+        const mountainTop = imageHeight / 3 * 1.2;
         const mountainHeight = mountainBase - mountainTop;
         const peakVariation = imageWidth / 3;
         const startX = p5Library.random(imageWidth / 3 - peakVariation / 2, imageWidth / 3 * 2 - peakVariation / 2);
         for (let i = 0; i < mountainHeight; i++) {
             const y = i + mountainTop;
-            const x = p5Library.map(p5Library.noise(i * noiseScale), 0, 1, startX, startX + peakVariation);
+            const x = p5Library.map(p5Library.noise((p5Library.millis() + i) * noiseScale), 0, 1, startX, startX + peakVariation);
             mountainMiddleLine.push(p5Library.createVector(x, y));
         }
 
@@ -49,13 +54,6 @@ let sketch = function (p5Library: p5) {
             p5Library.pop();
         }
         drawMiddleLine();
-
-        // draw mountains left and right of the middle line
-        // Start at the top point of the middleline and draw a mountain to the left and one to the right
-        // Then move down the middle line for about 1/10th of the line with a random offset
-        // Repeat until you reach the bottom of the middle line
-
-
 
         const getNextPosition = function () {
             let randomMin = 50;
@@ -102,12 +100,8 @@ let sketch = function (p5Library: p5) {
     }
 
     const drawSun = function () {
-        // Sun position is in the upper third of the canvas
-        // Sun always has at least 10 percent of the image width margin to the left and right(e.g. image width is 600, sun is between 60 and 540)
         const sunPosition = p5Library.createVector(p5Library.random(imageWidth / 10, imageWidth - imageWidth / 10), p5Library.random(imageHeight / 10, imageHeight / 3 - imageHeight / 10));
-        // Sun is a circle with a radius of approximately 1/20 of the image width
         const sunRadius = imageWidth / 20;
-        // Sun color is either a shade of yellow, red or orange
         const sunColor = p5Library.color(255, p5Library.random(50, 200), 0);
         p5Library.push();
         p5Library.fill(sunColor);
@@ -117,6 +111,11 @@ let sketch = function (p5Library: p5) {
     }
 
     p5Library.draw = function () {
+        const backgroundColor = p5Library.color(p5Library.random(230, 245), p5Library.random(218, 245), p5Library.random(166, 220));
+        p5Library.background(backgroundColor);
+        drawSun();
+        drawBackgroundMountains();
+        drawForegroundMountains();
     }
 
     p5Library.windowResized = function () {
