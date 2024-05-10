@@ -1,27 +1,22 @@
 import p5 from 'p5';
 
 let sketch = function (p5Library: p5) {
-
+    let noiseSeeds = [38, 58, 78, 89, 94, 95, 98, 135];
     p5Library.setup = function () {
         p5Library.frameRate(1);
-        // noiseSeed(38);
-        // noiseSeed(58);
-        // noiseSeed(78);
-        // noiseSeed(89);
-        // noiseSeed(94);
-        // noiseSeed(95);
-        // noiseSeed(98);
         p5Library.noiseSeed(135);
-        p5Library.createCanvas(400, 400);
+        p5Library.createCanvas(window.innerWidth, window.innerHeight);
         p5Library.background(0);
 
         p5Library.translate(p5Library.width / 2, p5Library.height / 2);
         p5Library.stroke(255);
         p5Library.strokeWeight(2);
 
-        // Number of arms
-        const arms = 6;
+        drawSnowflake(6);
+    }
 
+    const drawSnowflake = (arms: number) => {
+        // Number of arms
         for (let i = 0; i < arms; i++) {
             p5Library.push();
             p5Library.rotate(p5Library.TWO_PI / arms * i);
@@ -35,7 +30,8 @@ let sketch = function (p5Library: p5) {
             p5Library.pop();
         }
     }
-    function drawSnowflakeArm() {
+
+    const drawSnowflakeArm = () => {
         const steps = 10;
         const length = 100;
 
