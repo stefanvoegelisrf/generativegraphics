@@ -54,6 +54,7 @@ let sketch = function (p5Library: p5) {
     }
 
     p5Library.windowResized = function () {
+        p5Library.resizeCanvas(p5Library.windowWidth, p5Library.windowHeight);
     }
 
 }
