@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "main": "sketch.ts",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "p5": "^1.9.2"
+  },
+  "devDependencies": {
+    "@types/p5": "^1.7.6",
+    "vite": "^5.2.10"
+  }
+}
