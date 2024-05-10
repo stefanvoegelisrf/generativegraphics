@@ -8,9 +8,11 @@
   },
   "dependencies": {
     "lil-gui": "^0.19.1",
+    "d3-delaunay": "^6.0.4",
     "p5": "^1.9.2"
   },
   "devDependencies": {
+    "@types/d3": "^7.4.3",
     "@types/p5": "^1.7.6",
     "vite": "^5.2.10"
   }
