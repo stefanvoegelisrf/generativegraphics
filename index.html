@@ -1,22 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generative Graphics</title>
 </head>
+
 <body>
-    <ul>
-        <li><a href="./pages/tangram/index.html">Tangram</a></li>
-        <li><a href="./pages/snowflake/index.html">Snowflake</a></li>
-        <li><a href="./pages/perlin-noise-moving-circle/index.html">Perlin Noise Moving Circle</a></li>
-        <li><a href="./pages/falling-sand/index.html">Falling Sand</a></li>
-        <li><a href="./pages/generative-landscape/index.html">Generative Landscape</a></li>
-        <li><a href="./pages/starfield/index.html">Starfield</a></li>
-        <li><a href="./pages/mandelbrot/index.html">Mandelbrot</a></li>
-        <li><a href="./pages/mandelbulb/index.html">Mandelbulb</a></li>
-        <li><a href="./pages/weighted-voronoi/index.html">Weigthed Voronoi</a></li>
-        <li><a href="./pages/matterjs-demo/index.html">Matter.js Demo</a></li>
-    </ul>
+    <section id="page-navigation">
+        <ul class="page-list">
+            <li class="page-list-item"><a class="page-link" href="./pages/tangram/index.html">Tangram</a></li>
+            <li class="page-list-item"><a class="page-link" href="./pages/snowflake/index.html">Snowflake</a></li>
+            <li class="page-list-item"><a class="page-link" href="./pages/perlin-noise-moving-circle/index.html">Perlin
+                    Noise Moving Circle</a></li>
+            <li class="page-list-item"><a class="page-link" href="./pages/falling-sand/index.html">Falling Sand</a></li>
+            <li class="page-list-item"><a class="page-link" href="./pages/generative-landscape/index.html">Generative
+                    Landscape</a></li>
+            <li class="page-list-item"><a class="page-link" href="./pages/starfield/index.html">Starfield</a></li>
+            <li class="page-list-item"><a class="page-link" href="./pages/mandelbrot/index.html">Mandelbrot</a></li>
+            <li class="page-list-item"><a class="page-link" href="./pages/mandelbulb/index.html">Mandelbulb</a></li>
+            <li class="page-list-item"><a class="page-link" href="./pages/weighted-voronoi/index.html">Weigthed Voronoi</a>
+            </li>
+            <li class="page-list-item"><a class="page-link" href="./pages/matterjs-demo/index.html">Matter.js Demo</a></li>
+            <li class="page-list-item"><a class="page-link" href="./pages/blades/index.html">Blades</a></li>
+        </ul>
+    </section>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+        #page-navigation{
+            width: 100%;
+            height: 100%;
+        }
+        .page-list {
+            list-style: none;
+            padding-inline-start: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .page-list-item {
+            padding: 1rem;
+        }
+
+        .page-link {
+            text-decoration: none;
+        }
+    </style>
 </body>
+
 </html>
