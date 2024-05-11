@@ -8,7 +8,7 @@ let sketch = function (p5Library: p5) {
     }
 
     p5Library.draw = function () {
-        p5Library.background(255, 255, 255, 255);
+        p5Library.background(0,0,0,30);
         let amountOfLines = 10;
         let timeValue = p5Library.millis() * 0.01;
         drawSpreadingLines(50, timeValue, 5, 1);
