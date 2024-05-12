@@ -28,7 +28,7 @@ let sketch = function (p5Library: p5) {
                 p5Library.fill(255);
                 p5Library.textSize(pixelSize);
                 p5Library.textAlign(p5Library.CENTER, p5Library.CENTER);
-                const letterIndex = Math.floor(p5Library.map(brightness, 0, 255, 0, density.length - 1));
+                let letterIndex = Math.floor(p5Library.map(brightness, 0, 255, density.length - 1, 0));
                 p5Library.text(density[letterIndex], x * pixelSize, y * pixelSize)
             }
         }
