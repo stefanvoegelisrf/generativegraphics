@@ -5,9 +5,11 @@ let sketch = function (p5Library: p5) {
     let image: p5.Image;
     let canvasWidth: number;
     let canvasHeight: number;
+    let pixelBrightness: number[][];
+    const pixelSize = 8;
 
     p5Library.preload = function () {
-        image = p5Library.loadImage('./images/Aefru.JPG');
+        image = p5Library.loadImage('./images/Gastir.JPG');
     }
 
     p5Library.setup = function () {
@@ -15,28 +17,35 @@ let sketch = function (p5Library: p5) {
         const ratio = Math.min(maxSide / image.width, maxSide / image.height);
         canvasWidth = Math.round(image.width * ratio);
         canvasHeight = Math.round(image.height * ratio);
-        const imagePixelsPerCanvasPixel = image.width / canvasWidth;
         p5Library.createCanvas(canvasWidth, canvasHeight);
+        p5Library.frameRate(6);
+        pixelBrightness = new Array(canvasWidth).fill(0).map(() => new Array(canvasHeight).fill(0));
         image.loadPixels();
-        p5Library.background(0);
+        const imagePixelsPerCanvasPixel = image.width / canvasWidth;
         p5Library.noStroke();
-        const pixelSize = 8;
+        p5Library.fill(255);
+        p5Library.textSize(pixelSize);
+        p5Library.textAlign(p5Library.CENTER, p5Library.CENTER);
         for (let x = 0; x < canvasWidth; x++) {
             for (let y = 0; y < canvasHeight; y++) {
                 const pixel = image.get(x * imagePixelsPerCanvasPixel * pixelSize, y * imagePixelsPerCanvasPixel * pixelSize);
-                const brightness = p5Library.brightness(pixel);
-                p5Library.fill(255);
-                p5Library.textSize(pixelSize);
-                p5Library.textAlign(p5Library.CENTER, p5Library.CENTER);
-                let letterIndex = Math.floor(p5Library.map(brightness, 0, 255, density.length - 1, 0));
-                p5Library.text(density[letterIndex], x * pixelSize, y * pixelSize)
+                let brightness = p5Library.brightness(pixel);
+                pixelBrightness[x][y] = brightness;
             }
         }
     }
 
 
-    p5Library.draw = function () {
 
+    p5Library.draw = function () {
+        p5Library.background(0);
+        for (let x = 0; x < canvasWidth; x++) {
+            for (let y = 0; y < canvasHeight; y++) {
+                let brightness = pixelBrightness[x][y];
+                let letterIndex = Math.floor(p5Library.map(brightness, 0, 255, density.length - 1, 0));
+                p5Library.text(density[letterIndex], x * pixelSize, y * pixelSize)
+            }
+        }
     }
 
 }
