@@ -21,8 +21,7 @@ let sketch = function (p5Library: p5) {
         console.log(ratio);
         p5Library.createCanvas(canvasWidth, canvasHeight);
         image.loadPixels();
-        p5Library.background(255);
-        p5Library.image(image, 0, 0);
+        p5Library.background(0);
         p5Library.noStroke();
         const pixelSize = 8;
         for (let x = 0; x < canvasWidth; x++) {
@@ -30,7 +29,9 @@ let sketch = function (p5Library: p5) {
                 const pixel = image.get(x * imagePixelsPerCanvasPixel * pixelSize, y * imagePixelsPerCanvasPixel * pixelSize);
                 const brightness = p5Library.brightness(pixel);
                 p5Library.fill(brightness);
-                p5Library.square(x * pixelSize, y * pixelSize, pixelSize)
+                p5Library.textSize(pixelSize);
+                p5Library.textAlign(p5Library.CENTER, p5Library.CENTER);
+                p5Library.text('a', x * pixelSize, y * pixelSize)
             }
         }
     }
