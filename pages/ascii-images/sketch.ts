@@ -2,6 +2,7 @@ import p5 from 'p5';
 
 let sketch = function (p5Library: p5) {
     const density = 'Ñ@#W$9876543210?!abc;:+=-,._ '
+    const invertedDensity = ' _.,-=+:;cba!?0123456789$W#@Ñ'
     let image: p5.Image;
     let canvasWidth: number;
     let canvasHeight: number;
@@ -9,7 +10,7 @@ let sketch = function (p5Library: p5) {
     const pixelSize = 8;
 
     p5Library.preload = function () {
-        image = p5Library.loadImage('./images/Gastir.JPG');
+        image = p5Library.loadImage('./images/logo_original_with_background_1000x600.png');
     }
 
     p5Library.setup = function () {
@@ -43,8 +44,8 @@ let sketch = function (p5Library: p5) {
             for (let y = 0; y < canvasHeight; y++) {
                 let brightness = pixelBrightness[x][y];
                 brightness += p5Library.noise((x + 1) * (y + 1) * p5Library.millis() * 0.001) * 50;
-                let letterIndex = Math.floor(p5Library.map(brightness, 0, 255, density.length - 1, 0));
-                p5Library.text(density[letterIndex], x * pixelSize, y * pixelSize)
+                let letterIndex = Math.floor(p5Library.map(brightness, 0, 255, invertedDensity.length - 1, 0));
+                p5Library.text(invertedDensity[letterIndex], x * pixelSize, y * pixelSize)
             }
         }
     }
