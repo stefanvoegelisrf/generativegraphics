@@ -1,0 +1,32 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    height: 100vh;
+}
+
+#rectangle-grid {
+    display: grid;
+    width: 100vmin;
+    height: 100vmin;
+    gap: 1vmin;
+    grid-template-rows: repeat(10, 1fr);
+    grid-template-columns: repeat(10, 1fr);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    align-items: center;
+    justify-content: center;
+}
+
+.rectangle {
+    justify-self: center;
+    border-radius: 1vmin;
+    background-color: black;
+    width: 100%;
+    height: 100%;
+    transition: all 1s;
+}
