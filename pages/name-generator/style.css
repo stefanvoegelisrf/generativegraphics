@@ -1,0 +1,89 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    font-family: sans-serif;
+}
+
+h1,
+h2 {
+    width: max-content;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    width: 80%;
+    margin: 0 auto;
+}
+
+#settingsContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+#nameContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .2rem;
+}
+
+.name-item {
+    padding: 1rem;
+    background-color: lightgray;
+    border-radius: 5rem;
+}
+
+.name-item:hover {
+    background-color: gray;
+    cursor: pointer;
+}
+
+.name-item::after {
+    content: "";
+    width: 1rem;
+    height: 1rem;
+    background-image: url('./images/copy.svg');
+    background-size: cover;
+    display: inline-block;
+    margin: .1rem;
+    background-position: center;
+}
+
+.name-item.copied::after {
+    background-image: url('./images/copy-success.svg') !important;
+}
+
+#history li {
+    list-style: none;
+}
+
+#history {
+    width: 100%;
+}
+
+#historyEntries {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.history-entry {
+    display: flex;
+    gap: .2rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+#generateNames {
+    padding: 1rem;
+    background-color: white;
+    border: .1rem solid black;
+    border-radius: 5rem;
+}

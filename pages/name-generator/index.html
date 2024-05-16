@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Name Generator</title>
+    <script type="module" src="./script.ts"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main>
+        <h1>Random Name Generator</h1>
+        <h2>Settings</h2>
+        <div id="settingsContainer">
+            <label for="minSyllables">Min Syllables</label>
+            <input id="minSyllables" type="range" min="3" max="10" step="1" value="4" />
+            <label for="maxSyllables">Max Syllables</label>
+            <input id="maxSyllables" type="range" min="3" max="10" step="1" value="5" />
+            <label for="amountOfNames">Amount of names</label>
+            <input id="amountOfNames" type="range" min="1" max="50" step="1" value="15" />
+        </div>
+        <h2>Generated Names</h2>
+        <div id="nameContainer"></div>
+        <button type="button" id="generateNames">Generate names</button>
+        <details id="history">
+            <summary>
+                History
+            </summary>
+            <div id="historyEntries">
+                <h1>History</h1>
+            </div>
+        </details>
+    </main>
+</body>
+
+</html>
