@@ -1,8 +1,7 @@
 :root {
     --mockup-size: 20rem;
     --screen-thickness: 1rem;
-
-    --screen-height: 18rem;
+    --screen-height: 16rem;
 }
 
 .absolute-center {
@@ -25,6 +24,12 @@
     aspect-ratio: 1;
 }
 
+.screen-part {
+    background-color: hsl(39,
+            100%,
+            var(--lightness));
+}
+
 .screen-mockup {
     position: relative;
     transform-style: preserve-3d;
@@ -33,63 +38,65 @@
 }
 
 .screen {
-    background-color: pink;
+    /* background-color: pink; */
+    background: url(./SimplyComplex_0007.png);
+    background-size: cover;
     width: 90%;
-    height: 80%;
+    height: calc(var(--screen-height)*0.8);
     left: 50%;
     top: 5%;
     transform: translate(-50%);
 }
 
 .screen-border {
-    background-color: aqua;
     width: var(--mockup-size);
     height: var(--screen-height);
+    --lightness: 66%;
 }
 
 .screen-side-left {
-    background-color: red;
     right: 100%;
     width: var(--screen-thickness);
     height: var(--screen-height);
     transform-origin: right;
     transform: rotateY(-90deg);
+    --lightness: 70%;
 }
 
 .screen-side-right {
-    background-color: violet;
     left: 100%;
     width: var(--screen-thickness);
     height: var(--screen-height);
     transform-origin: left;
     transform: rotateY(90deg);
+    --lightness: 70%;
 }
 
 .screen-side-top {
-    background-color: blue;
     bottom: 100%;
     transform-origin: bottom;
     width: var(--mockup-size);
     height: var(--screen-thickness);
     transform: rotateX(90deg);
+    --lightness: 74%;
 }
 
 .screen-side-bottom {
-    background-color: green;
     top: var(--screen-height);
     transform-origin: top;
     width: var(--mockup-size);
     height: var(--screen-thickness);
     transform: rotateX(-90deg);
+    --lightness: 74%;
 }
 
 .screen-back {
-    background-color: cadetblue;
     bottom: calc(var(--screen-height)+var(--screen-thickness));
     width: var(--mockup-size);
     height: var(--screen-height);
     transform-origin: center 50% calc(var(--screen-thickness)*-0.5);
     transform: rotateX(180deg);
+    --lightness: 78%;
 }
 
 .screen-holder {

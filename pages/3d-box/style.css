@@ -1,3 +1,5 @@
+
+/* Based on https://dev.to/martinp/how-to-do-stunning-3d-with-pure-htmlcss-ah*/
 :root {
     --size: 10rem;
 }
@@ -21,7 +23,6 @@
     position: relative;
     transform-style: preserve-3d;
     animation: rotate 4s linear infinite;
-
 }
 
 .face {
