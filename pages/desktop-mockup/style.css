@@ -34,11 +34,10 @@
     transform-style: preserve-3d;
     aspect-ratio: 1;
     transform: rotateY(20deg);
-    /* animation: rotate 20s linear infinite; */
+    animation: rotate 20s linear infinite;
 }
 
 .screen {
-    /* background-color: pink; */
     background: url(./SimplyComplex_0007.png);
     background-size: cover;
     background-position: center;
@@ -104,7 +103,7 @@
 .screen-holder {
     background-color: hsl(39,
             100%,
-        60%);
+            60%);
     width: calc(var(--mockup-size)*.3);
     height: calc(var(--mockup-size)*0.6);
     transform-origin: center;
@@ -120,7 +119,6 @@
     background: radial-gradient(circle, rgb(175, 175, 175) 0%, rgb(235, 235, 235) 70%);
     box-shadow: 0 0 5rem 5rem rgb(235, 235, 235);
     border-radius: 50%;
-    /* background: transparent; */
     transform-origin: bottom;
     transform: rotateX(90deg) translateY(50%);
     bottom: 0;
@@ -128,14 +126,14 @@
 
 .stand {
     width: calc(var(--mockup-size)*.3);
-    height: calc(var(--mockup-size)*0.3);
+    height: calc(var(--mockup-size)*0.4);
     transform-origin: bottom;
-    transform: translateX(-50%) rotateX(90deg) translateY(2rem);
+    transform: translateX(-50%) rotateX(90deg) translateY(3rem);
     bottom: 0;
     left: 50%;
     background-color: hsl(39,
             100%,
-        70%);
+            70%);
     border-radius: 1rem;
 }
 
