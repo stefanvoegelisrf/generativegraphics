@@ -1,0 +1,111 @@
+:root {
+    --mockup-size: 20rem;
+    --screen-thickness: 1rem;
+
+    --screen-height: 18rem;
+}
+
+.absolute-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.mockup {
+    height: var(--mockup-size);
+    width: var(--mockup-size);
+    perspective: 800px;
+    border: 1px solid black;
+}
+
+.mockup-part {
+    position: absolute;
+    transform-style: preserve-3d;
+    aspect-ratio: 1;
+}
+
+.screen-mockup {
+    position: relative;
+    transform-style: preserve-3d;
+    aspect-ratio: 1;
+    animation: rotate 20s linear infinite;
+}
+
+.screen {
+    background-color: pink;
+    width: 90%;
+    height: 80%;
+    left: 50%;
+    top: 5%;
+    transform: translate(-50%);
+}
+
+.screen-border {
+    background-color: aqua;
+    width: var(--mockup-size);
+    height: var(--screen-height);
+}
+
+.screen-side-left {
+    background-color: red;
+    right: 100%;
+    width: var(--screen-thickness);
+    height: var(--screen-height);
+    transform-origin: right;
+    transform: rotateY(-90deg);
+}
+
+.screen-side-right {
+    background-color: violet;
+    left: 100%;
+    width: var(--screen-thickness);
+    height: var(--screen-height);
+    transform-origin: left;
+    transform: rotateY(90deg);
+}
+
+.screen-side-top {
+    background-color: blue;
+    bottom: 100%;
+    transform-origin: bottom;
+    width: var(--mockup-size);
+    height: var(--screen-thickness);
+    transform: rotateX(90deg);
+}
+
+.screen-side-bottom {
+    background-color: green;
+    top: var(--screen-height);
+    transform-origin: top;
+    width: var(--mockup-size);
+    height: var(--screen-thickness);
+    transform: rotateX(-90deg);
+}
+
+.screen-back {
+    background-color: cadetblue;
+    bottom: calc(var(--screen-height)+var(--screen-thickness));
+    width: var(--mockup-size);
+    height: var(--screen-height);
+    transform-origin: center 50% calc(var(--screen-thickness)*-0.5);
+    transform: rotateX(180deg);
+}
+
+.screen-holder {
+    background-color: yellow;
+}
+
+.stand {
+    background-color: orange;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotateY(360deg);
+    }
+}
