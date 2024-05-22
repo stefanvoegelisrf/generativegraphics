@@ -1,24 +1,44 @@
 #highlight {
     position: absolute;
-    width: 50vw;
+    width: 90%;
+    height: 90%;
+    left: 5%;
+    top: 5%;
+}
+
+.container{
+    position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
 }
 
+button {
+    position: relative;
+    padding: 1rem;
+    transition: color .5s linear;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 2rem;
+}
+button span{
+    display: inline-block;
+    position: relative;
+    z-index: 10;
+}
+
+button:hover {
+    color: white;
+}
+
+button:hover .path {
+    stroke-dashoffset: 0;
+}
+
 .path {
     --dash-array: 6000;
     stroke-dasharray: var(--dash-array);
-    stroke-dashoffset: 0;
-    animation: dash .8s linear;
-}
-
-@keyframes dash {
-    from {
-        stroke-dashoffset: var(--dash-array);
-    }
-
-    to {
-        stroke-dashoffset: 0;
-    }
+    stroke-dashoffset: var(--dash-array);
+    transition: stroke-dashoffset .8s linear;
+    fill: transparent;
 }
