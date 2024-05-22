@@ -7,7 +7,7 @@ let sketch = function (p5Library: p5) {
     let stefanPortrait: p5.Image;
 
     p5Library.preload = function () {
-        p5Library.loadImage('./images/20220629_Portrait_SRF-122_edit_scaled.png', (img) => {
+        p5Library.loadImage('./images/Portrait-Vector-Free-Form.gif', (img) => {
             stefanPortrait = img;
         });
     }
@@ -15,6 +15,7 @@ let sketch = function (p5Library: p5) {
     p5Library.setup = function () {
         p5Library.frameRate(30);
         p5Library.createCanvas(stefanPortrait.width, stefanPortrait.height)
+        console.log(stefanPortrait.width, stefanPortrait.height);
         for (let i = 0; i < amountOfPoints; i++) {
             let x = p5Library.random(stefanPortrait.width);
             let y = p5Library.random(stefanPortrait.height);
@@ -91,8 +92,7 @@ let sketch = function (p5Library: p5) {
                 const r = stefanPortrait.pixels[index + 0];
                 const g = stefanPortrait.pixels[index + 1];
                 const b = stefanPortrait.pixels[index + 2];
-                const color = (r + g + b) / 3;
-                const brightness = p5Library.saturation([r, g, b]);
+                const brightness = p5Library.map(p5Library.saturation([r, g, b]), 0, 255, 255, 0);
                 let weight = brightness / 255;
                 if (stefanPortrait.pixels[index + 3] < 100) {
                     weight = 0;
@@ -120,7 +120,7 @@ let sketch = function (p5Library: p5) {
         for (let i = 0; i < randomPoints.length; i++) {
             let mappedColorValue = p5Library.map(weights[i], 0, maxWeight, 0, 255);
             p5Library.stroke(mappedColorValue);
-            p5Library.strokeWeight(p5Library.map(weights[i], 0, maxWeight, 1, 7));
+            p5Library.strokeWeight(p5Library.map(weights[i], 0, maxWeight, 1, 15));
             p5Library.point(randomPoints[i].x, randomPoints[i].y);
         }
     }
