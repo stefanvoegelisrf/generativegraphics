@@ -16,6 +16,7 @@
 }
 
 button {
+    color: black;
     position: relative;
     padding: 1rem;
     transition: color .5s linear;
@@ -47,7 +48,7 @@ button:hover .path {
     --dash-array: 6000;
     stroke-dasharray: var(--dash-array);
     stroke-dashoffset: var(--dash-array);
-    transition: stroke-dashoffset .8s linear;
+    transition: stroke-dashoffset .5s linear;
 }
 
 
