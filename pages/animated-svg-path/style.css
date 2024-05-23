@@ -1,12 +1,14 @@
-#highlight {
+#highlight,
+#highlight-horizontal {
     position: absolute;
     width: 90%;
     height: 90%;
-    left: 5%;
-    top: 5%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
-.container{
+.container {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -21,7 +23,8 @@ button {
     border: 1px solid black;
     border-radius: 2rem;
 }
-button span{
+
+button span {
     display: inline-block;
     position: relative;
     z-index: 10;
@@ -36,9 +39,21 @@ button:hover .path {
 }
 
 .path {
+    fill: transparent;
+
+}
+
+.full .path {
     --dash-array: 6000;
     stroke-dasharray: var(--dash-array);
     stroke-dashoffset: var(--dash-array);
     transition: stroke-dashoffset .8s linear;
-    fill: transparent;
+}
+
+
+.full-horizontal .path {
+    --dash-array: 8000;
+    stroke-dasharray: var(--dash-array);
+    stroke-dashoffset: var(--dash-array);
+    transition: stroke-dashoffset .3s linear;
 }
