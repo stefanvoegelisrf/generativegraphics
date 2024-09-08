@@ -3,6 +3,7 @@ import p5, { Vector } from 'p5';
 let sketch = function (p5Library: p5) {
     const imageWidth = 600;
     const imageHeight = 800;
+    let redraw = true;
 
     p5Library.setup = function () {
         p5Library.createCanvas(imageWidth, imageHeight)
@@ -111,14 +112,20 @@ let sketch = function (p5Library: p5) {
     }
 
     p5Library.draw = function () {
-        const backgroundColor = p5Library.color(p5Library.random(230, 245), p5Library.random(218, 245), p5Library.random(166, 220));
-        p5Library.background(backgroundColor);
-        drawSun();
-        drawBackgroundMountains();
-        drawForegroundMountains();
+        if (redraw) {
+            const backgroundColor = p5Library.color(p5Library.random(230, 245), p5Library.random(218, 245), p5Library.random(166, 220));
+            p5Library.background(backgroundColor);
+            drawSun();
+            drawBackgroundMountains();
+            drawForegroundMountains();
+            redraw = false;
+        }
     }
 
     p5Library.windowResized = function () {
+    }
+    p5Library.mousePressed = function () {
+        redraw = true;
     }
 }
 let instantiatedSketch = new p5(sketch);

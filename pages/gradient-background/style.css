@@ -1,0 +1,75 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* Gradient 1 */
+
+@property --gradient-1-size {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 10vmin;
+}
+
+@property --gradient-1-position-x {
+    syntax: "<percentage>";
+    inherits: false;
+    initial-value: 10%;
+}
+
+@property --gradient-1-position-y {
+    syntax: "<percentage>";
+    inherits: false;
+    initial-value: 10%;
+}
+
+/* Gradient 2 */
+
+@property --gradient-2-size {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 30vmin;
+}
+
+@property --gradient-2-position-x {
+    syntax: "<percentage>";
+    inherits: false;
+    initial-value: 60%;
+}
+
+@property --gradient-2-position-y {
+    syntax: "<percentage>";
+    inherits: false;
+    initial-value: 60%;
+}
+
+.radial-background {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-image: radial-gradient(ellipse var(--gradient-1-size) var(--gradient-1-size) at var(--gradient-1-position-x) var(--gradient-1-position-y), #FFA500, transparent),
+        radial-gradient(ellipse var(--gradient-2-size) var(--gradient-2-size) at var(--gradient-2-position-x) var(--gradient-2-position-y), #00FFBB, transparent);
+    animation: animate-gradients 5s linear infinite alternate;
+}
+
+@keyframes animate-gradients {
+    0% {
+        --gradient-1-size: 10vmin;
+        --gradient-1-position-x: 10%;
+        --gradient-1-position-y: 70%;
+/* 
+        --gradient-2-size: 30vmin;
+        --gradient-2-position-x: 60%;
+        --gradient-2-position-y: 60%; */
+    }
+
+    100% {
+        --gradient-1-size: 50vmin;
+        --gradient-1-position-x: 90%;
+        --gradient-1-position-y: 60%;
+/* 
+        --gradient-2-size: 45vmin;
+        --gradient-2-position-x: 45%;
+        --gradient-2-position-y: 90%; */
+    }
+}
