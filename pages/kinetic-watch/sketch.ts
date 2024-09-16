@@ -3,7 +3,7 @@ import p5 from 'p5';
 let sketch = function (p5Library: p5) {
     let clockFaceImage;
     p5Library.preload = function () {
-        clockFaceImage = p5Library.loadImage("./kinetic pattern 6.png");
+        clockFaceImage = p5Library.loadImage("./kinetic pattern 2.png");
     }
 
     p5Library.setup = function () {
@@ -31,14 +31,31 @@ let sketch = function (p5Library: p5) {
     }
 
     let getSimulatedHandValues = function (): { hour: number, minute: number, second: number } {
-        return { hour: p5Library.millis() * 0.003, minute: p5Library.millis() * 0.006, second: p5Library.millis() * 0.009 };
+        return { hour: p5Library.millis() * 0.003, minute: p5Library.millis() * 0.006, second: p5Library.millis() * 0.006 };
     }
 
     p5Library.draw = function () {
+        p5Library.background(220);
+        // p5Library.push();
+        // drawClock(false);
+        // p5Library.pop();
+        drawArt();
+    }
+
+
+    let drawArt=function(){
+        p5Library.push();
+        drawClock(false);
+        p5Library.pop();
+        p5Library.push();
+        drawClock(true);
+        p5Library.pop();
+    }
+
+    let drawClock = function (invert: boolean = false) {
         let diameter =
             p5Library.windowWidth > p5Library.windowHeight ? p5Library.windowHeight * 0.5 : p5Library.windowWidth * 0.5;
-        p5Library.background(220);
-        let handValues = getSimulatedHandValues();
+        let handValues = getHandValues();
         p5Library.translate(p5Library.width * 0.5, p5Library.height * 0.5);
         // Draw hour
         p5Library.push();
@@ -51,17 +68,17 @@ let sketch = function (p5Library: p5) {
 
         // Draw minute
         p5Library.push();
-        p5Library.rotate(handValues.minute);
+        p5Library.rotate(invert ? -handValues.minute : handValues.minute);
         // p5Library.strokeWeight(5);
         // p5Library.fill(0);
         // p5Library.ellipse(0, -diameter * 0.5 - 25 - 5, 50);
-        drawHand(diameter, false);
+        // drawHand(diameter, invert);
         p5Library.pop();
 
         // Draw second
         p5Library.push();
-        p5Library.rotate(handValues.second);
-        drawHand(diameter);
+        p5Library.rotate(invert ? -handValues.second : handValues.second);
+        drawHand(diameter, invert);
         p5Library.pop();
     }
 
