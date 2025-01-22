@@ -28,7 +28,7 @@ const settings = {
 let sketch = function (p5Library: p5) {
     let maxLength: number;
     let minLength: number;
-
+    let gui: GUI;
     const createBlade = (length: number, thetaAngle: number) => {
         p5Library.push();
         p5Library.translate(0, 0);
@@ -49,6 +49,7 @@ let sketch = function (p5Library: p5) {
         minLength = maxLength * 0.5;
         p5Library.angleMode(p5Library.DEGREES);
         addGui();
+        document.addEventListener("keypress", keyPressed);
     }
 
 
@@ -97,6 +98,17 @@ let sketch = function (p5Library: p5) {
         }
     }
 
+    let keyPressed = function (event: KeyboardEvent) {
+        switch (event.key) {
+            case "g":
+                gui.show(gui._hidden);
+        }
+    }
+
+    p5Library.windowResized = function () {
+        p5Library.resizeCanvas(p5Library.windowWidth, p5Library.windowHeight);
+    }
+
     let alternationDirection = 1;
 
     let alternateRotation = function () {
@@ -104,10 +116,6 @@ let sketch = function (p5Library: p5) {
             alternationDirection = alternationDirection * -1;
         }
         settings.bladeRotation += settings.bladeRotationAlternationSpeed * 0.01 * alternationDirection;
-    }
-
-    p5Library.windowResized = function () {
-        p5Library.resizeCanvas(p5Library.windowWidth, p5Library.windowHeight);
     }
 
     let bladeRotationAlternationRangeChanged = function () {
@@ -118,7 +126,7 @@ let sketch = function (p5Library: p5) {
     }
 
     const addGui = function () {
-        let gui = new GUI();
+        gui = new GUI();
         gui.add(settings, "speed")
             .name("Speed")
             .min(0.05)
