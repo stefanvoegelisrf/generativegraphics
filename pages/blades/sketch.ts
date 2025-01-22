@@ -18,7 +18,11 @@ const settings = {
     bladeRotationAlternationSpeed: 1,
     bladeStrokeMin: 1,
     bladeStrokeMax: 5,
-    bladeOffsetX: 0
+    bladeOffsetX: 0,
+    bladeOffsetXNoiseEnabled: false,
+    bladeOffsetXNoiseSpeed: 1,
+    bladeOffsetXNoiseMultiplier: 10,
+    bladeOffsetXNoiseIntensity: 10,
 }
 
 let sketch = function (p5Library: p5) {
@@ -60,21 +64,33 @@ let sketch = function (p5Library: p5) {
         if (settings.bladeRotationAlternateEnabled) {
             alternateRotation();
         }
+        let noiseOffsetX = 0;
+
         for (let multiplier = 0; multiplier < p5Library.PI; multiplier += p5Library.PI * 0.02) {
-            p5Library.translate(settings.bladeOffsetX, 20);
+            if (settings.bladeOffsetXNoiseEnabled) {
+                noiseOffsetX = p5Library.noise((p5Library.millis() + multiplier * settings.bladeOffsetXNoiseIntensity) * settings.bladeOffsetXNoiseSpeed * 0.001) * settings.bladeOffsetXNoiseMultiplier;
+                console.log(noiseOffsetX)
+            }
+
             p5Library.stroke(
                 p5Library.map(multiplier, 0, p5Library.PI, settings.redRangeMin, settings.redRangeMax),
                 p5Library.map(multiplier, 0, p5Library.PI, settings.greenRangeMin, settings.greenRangeMax),
                 p5Library.map(multiplier, 0, p5Library.PI, settings.blueRangeMin, settings.blueRangeMax),
                 settings.strokeOpacity
             );
-            p5Library.push();
 
+            p5Library.translate(settings.bladeOffsetX, 20);
+
+            p5Library.push();
+            p5Library.translate(noiseOffsetX, 0);
             p5Library.rotate(multiplier * settings.bladeRotation);
             createBlade(settings.bladeLength, frameCountValue * p5Library.PI + multiplier);
             p5Library.pop();
+
             p5Library.translate(-settings.bladeOffsetX, 0);
+
             p5Library.push();
+            p5Library.translate(-noiseOffsetX, 0);
             p5Library.rotate(-multiplier * settings.bladeRotation);
             createBlade(settings.bladeLength, -(frameCountValue * p5Library.PI + multiplier));
             p5Library.pop();
@@ -193,10 +209,29 @@ let sketch = function (p5Library: p5) {
             .min(1)
             .max(100)
             .step(1);
-        bladeFolder.add(settings, "bladeOffsetX")
+        let bladeOffsetXFolder = bladeFolder.addFolder("Blade offset x");
+        bladeOffsetXFolder.add(settings, "bladeOffsetX")
             .name("Offset x")
             .min(-400)
             .max(400)
+            .step(1);
+        bladeOffsetXFolder.add(settings, "bladeOffsetXNoiseEnabled")
+            .name("Offset with noise");
+        bladeOffsetXFolder.add(settings, "bladeOffsetXNoiseSpeed")
+            .name("Noise Speed")
+            .min(1)
+            .max(100)
+            .step(1);
+        bladeOffsetXFolder.add(settings, "bladeOffsetXNoiseMultiplier")
+            .name("Noise multiplier")
+            .min(1)
+            .max(400)
+            .step(1);
+
+        bladeOffsetXFolder.add(settings, "bladeOffsetXNoiseIntensity")
+            .name("Noise intensity")
+            .min(1)
+            .max(1000)
             .step(1);
     }
 
