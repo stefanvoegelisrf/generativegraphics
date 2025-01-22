@@ -2,6 +2,7 @@ import p5 from 'p5';
 import { GUI } from 'lil-gui';
 
 const settings = {
+    speed: 1,
     redRangeMin: 0,
     redRangeMax: 255,
     greenRangeMin: 0,
@@ -52,10 +53,10 @@ let sketch = function (p5Library: p5) {
 
 
     p5Library.draw = function () {
-        frameCountValue += 0.01;
+        frameCountValue += settings.speed * 0.01;
 
         p5Library.background(0, 5);
-        p5Library.translate(p5Library.width * 0.5 - (settings.bladeOffsetX * 0.5), -100);
+        p5Library.translate(p5Library.width * 0.5 - (settings.bladeOffsetX * 0.5), 0);
         if (settings.bladeRotationAlternateEnabled) {
             alternateRotation();
         }
@@ -102,6 +103,12 @@ let sketch = function (p5Library: p5) {
 
     const addGui = function () {
         let gui = new GUI();
+        gui.add(settings, "speed")
+            .name("Speed")
+            .min(0.05)
+            .max(3)
+            .step(0.01);
+
         let strokeColorFolder = gui.addFolder("Stroke color");
         strokeColorFolder.add(settings, "redRangeMin")
             .name("Red min")
