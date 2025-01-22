@@ -11,6 +11,10 @@ const settings = {
     strokeOpacity: 20,
     bladeLength: 300,
     bladeRotation: 20,
+    bladeRotationAlternateEnabled: false,
+    bladeRotationAlternateFrom: 0,
+    bladeRotationAlternateTo: 360,
+    bladeRotationAlternationSpeed: 1,
     bladeStrokeMin: 1,
     bladeStrokeMax: 5,
     bladeOffsetX: 0
@@ -52,6 +56,9 @@ let sketch = function (p5Library: p5) {
 
         p5Library.background(0, 5);
         p5Library.translate(p5Library.width * 0.5 - (settings.bladeOffsetX * 0.5), -100);
+        if (settings.bladeRotationAlternateEnabled) {
+            alternateRotation();
+        }
         for (let multiplier = 0; multiplier < p5Library.PI; multiplier += p5Library.PI * 0.02) {
             p5Library.translate(settings.bladeOffsetX, 20);
             p5Library.stroke(
@@ -61,6 +68,7 @@ let sketch = function (p5Library: p5) {
                 settings.strokeOpacity
             );
             p5Library.push();
+
             p5Library.rotate(multiplier * settings.bladeRotation);
             createBlade(settings.bladeLength, frameCountValue * p5Library.PI + multiplier);
             p5Library.pop();
@@ -70,11 +78,26 @@ let sketch = function (p5Library: p5) {
             createBlade(settings.bladeLength, -(frameCountValue * p5Library.PI + multiplier));
             p5Library.pop();
         }
+    }
 
+    let alternationDirection = 1;
+
+    let alternateRotation = function () {
+        if (settings.bladeRotation >= settings.bladeRotationAlternateTo || settings.bladeRotation <= settings.bladeRotationAlternateFrom) {
+            alternationDirection = alternationDirection * -1;
+        }
+        settings.bladeRotation += settings.bladeRotationAlternationSpeed * 0.01 * alternationDirection;
     }
 
     p5Library.windowResized = function () {
         p5Library.resizeCanvas(p5Library.windowWidth, p5Library.windowHeight);
+    }
+
+    let bladeRotationAlternationRangeChanged = function () {
+        if (!settings.bladeRotationAlternateEnabled) return;
+        if (settings.bladeRotation >= settings.bladeRotationAlternateTo || settings.bladeRotation <= settings.bladeRotationAlternateFrom) {
+            settings.bladeRotation = p5Library.map(1, 0, 2, settings.bladeRotationAlternateFrom, settings.bladeRotationAlternateTo);
+        }
     }
 
     const addGui = function () {
@@ -121,11 +144,38 @@ let sketch = function (p5Library: p5) {
             .min(10)
             .max(1000)
             .step(1);
-        bladeFolder.add(settings, "bladeRotation")
+        let bladeRotationFolder = bladeFolder.addFolder("Rotation");
+
+        bladeRotationFolder.add(settings, "bladeRotation")
             .name("Rotation")
-            .min(5)
-            .max(180)
+            .min(-360)
+            .max(360)
+            .step(1)
+            .listen();
+        bladeRotationFolder.add(settings, "bladeRotationAlternateEnabled")
+            .onChange(bladeRotationAlternationRangeChanged)
+            .name("Alternate");
+
+        bladeRotationFolder.add(settings, "bladeRotationAlternateFrom")
+            .name("Alternate from")
+            .min(-360)
+            .max(360)
+            .step(1)
+            .onChange(bladeRotationAlternationRangeChanged);
+
+        bladeRotationFolder.add(settings, "bladeRotationAlternateTo")
+            .name("Alternate to")
+            .min(-360)
+            .max(360)
+            .step(1)
+            .onChange(bladeRotationAlternationRangeChanged);
+
+        bladeRotationFolder.add(settings, "bladeRotationAlternationSpeed")
+            .name("Alternation speed")
+            .min(1)
+            .max(100)
             .step(1);
+
         bladeFolder.add(settings, "bladeStrokeMin")
             .name("Stroke min")
             .min(1)
@@ -138,7 +188,7 @@ let sketch = function (p5Library: p5) {
             .step(1);
         bladeFolder.add(settings, "bladeOffsetX")
             .name("Offset x")
-            .min(0)
+            .min(-400)
             .max(400)
             .step(1);
     }
