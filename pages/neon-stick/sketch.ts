@@ -15,17 +15,20 @@ let sketch = function (p5Library: p5) {
 
         p5Library.background(0)
         let timeValue = p5Library.millis() * 1;
-        let sinValue = Math.sin(timeValue * animationXMultiplier);
-        let cosValue = Math.cos(timeValue * animationYMultiplier);
+        let speed = 1;
+        let sinValue = Math.sin(timeValue * speed * animationXMultiplier);
+        let cosValue = Math.cos(timeValue * speed * animationYMultiplier);
         let sinAngle =
             p5Library.map(sinValue, -1, 1, 0, p5Library.TWO_PI) * (diameter + p5Library.windowWidth * 0.125);
         let cosAngle =
             p5Library.map(cosValue, -1, 1, 0, p5Library.TWO_PI) * (diameter + p5Library.windowHeight * 0.125);
-        for (let i = 0; i < 50; i++) {
+        let amountOfCircles = 50;
+        for (let i = 0; i < amountOfCircles; i++) {
+            let circleDiameter = 50;
             p5Library.circle(
                 diameter * 2 + sinAngle - sinValue * i * 10,
                 diameter * 2 + cosAngle - cosValue * i * 10,
-                50
+                circleDiameter
             );
         }
     }
