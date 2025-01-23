@@ -6,6 +6,7 @@ const settings = {
     blendMode: "BLEND",
     backgroundColor: { r: 0, g: 0, b: 0 },
     backgroundOpacity: 5,
+    pixelDensity: 1,
     redRangeMin: 0,
     redRangeMax: 255,
     greenRangeMin: 0,
@@ -53,9 +54,8 @@ let sketch = function (p5Library: p5) {
         p5Library.angleMode(p5Library.DEGREES);
         addGui();
         document.addEventListener("keypress", keyPressed);
+        settings.pixelDensity = p5Library.pixelDensity();
     }
-
-
 
     let frameCountValue = 0.3;
 
@@ -103,6 +103,10 @@ let sketch = function (p5Library: p5) {
 
     p5Library.windowResized = function () {
         p5Library.resizeCanvas(p5Library.windowWidth, p5Library.windowHeight);
+    }
+
+    let changePixelDensity = function (value: number) {
+        p5Library.pixelDensity(value);
     }
 
     let keyPressed = function (event: KeyboardEvent) {
@@ -179,6 +183,14 @@ let sketch = function (p5Library: p5) {
             .min(0)
             .max(255)
             .step(1);
+
+        gui.add(settings, "pixelDensity")
+            .name("Pixel density")
+            .min(0.01)
+            .max(5)
+            .step(0.01)
+            .listen()
+            .onChange(changePixelDensity);
 
         let strokeColorFolder = gui.addFolder("Stroke color");
         strokeColorFolder.add(settings, "redRangeMin")
