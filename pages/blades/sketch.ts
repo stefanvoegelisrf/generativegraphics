@@ -3,6 +3,7 @@ import { GUI } from 'lil-gui';
 
 const settings = {
     speed: 1,
+    blendMode: "BLEND",
     redRangeMin: 0,
     redRangeMax: 255,
     greenRangeMin: 0,
@@ -98,6 +99,10 @@ let sketch = function (p5Library: p5) {
         }
     }
 
+    p5Library.windowResized = function () {
+        p5Library.resizeCanvas(p5Library.windowWidth, p5Library.windowHeight);
+    }
+
     let keyPressed = function (event: KeyboardEvent) {
         switch (event.key) {
             case "g":
@@ -105,8 +110,30 @@ let sketch = function (p5Library: p5) {
         }
     }
 
-    p5Library.windowResized = function () {
-        p5Library.resizeCanvas(p5Library.windowWidth, p5Library.windowHeight);
+    let changeBlendMode = function (blendMode: "BLEND" | "DARKEST" | "LIGHTEST" | "DIFFERENCE" | "MULTIPLY" | "EXCLUSION" | "SCREEN" | "REPLACE" | "OVERLAY" | "HARD_LIGHT" | "SOFT_LIGHT" | "DODGE" | "BURN" | "ADD" | "NORMAL") {
+        let typedBlendMode: p5.BLEND_MODE = p5Library.BLEND;
+        switch (blendMode) {
+            case "DIFFERENCE":
+                typedBlendMode = p5Library.DIFFERENCE;
+                break;
+            case "DODGE":
+                typedBlendMode = p5Library.DODGE;
+                break;
+            case "HARD_LIGHT":
+                typedBlendMode = p5Library.HARD_LIGHT;
+                break;
+            case "NORMAL":
+                typedBlendMode = p5Library.NORMAL;
+                break;
+            case "SOFT_LIGHT":
+                typedBlendMode = p5Library.SOFT_LIGHT;
+                break;
+            default:
+            case "BLEND":
+                typedBlendMode = p5Library.BLEND;
+                break;
+        }
+        p5Library.blendMode(typedBlendMode)
     }
 
     let alternationDirection = 1;
@@ -132,6 +159,15 @@ let sketch = function (p5Library: p5) {
             .min(0.05)
             .max(3)
             .step(0.01);
+
+        gui.add(settings, "blendMode")
+            .options(["BLEND"
+                , "DIFFERENCE"
+                , "HARD_LIGHT"
+                , "SOFT_LIGHT"
+                , "DODGE"
+                , "NORMAL"])
+            .onChange(changeBlendMode)
 
         let strokeColorFolder = gui.addFolder("Stroke color");
         strokeColorFolder.add(settings, "redRangeMin")
@@ -210,7 +246,7 @@ let sketch = function (p5Library: p5) {
         bladeFolder.add(settings, "bladeStrokeMin")
             .name("Stroke min")
             .min(1)
-            .max(5)
+            .max(100)
             .step(1);
         bladeFolder.add(settings, "bladeStrokeMax")
             .name("Stroke max")
