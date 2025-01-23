@@ -4,6 +4,8 @@ import { GUI } from 'lil-gui';
 const settings = {
     speed: 1,
     blendMode: "BLEND",
+    backgroundColor: { r: 0, g: 0, b: 0 },
+    backgroundOpacity: 5,
     redRangeMin: 0,
     redRangeMax: 255,
     greenRangeMin: 0,
@@ -61,7 +63,7 @@ let sketch = function (p5Library: p5) {
     p5Library.draw = function () {
         frameCountValue += settings.speed * 0.01;
 
-        p5Library.background(0, 5);
+        p5Library.background(settings.backgroundColor.r, settings.backgroundColor.g, settings.backgroundColor.b, settings.backgroundOpacity);
         p5Library.translate(p5Library.width * 0.5 - (settings.bladeOffsetX * 0.5), 0);
         if (settings.bladeRotationAlternateEnabled) {
             alternateRotation();
@@ -168,6 +170,15 @@ let sketch = function (p5Library: p5) {
                 , "DODGE"
                 , "NORMAL"])
             .onChange(changeBlendMode)
+
+        gui.addColor(settings, "backgroundColor", 255)
+            .name("Background color");
+
+        gui.add(settings, "backgroundOpacity")
+            .name("Background opacity")
+            .min(0)
+            .max(255)
+            .step(1);
 
         let strokeColorFolder = gui.addFolder("Stroke color");
         strokeColorFolder.add(settings, "redRangeMin")
