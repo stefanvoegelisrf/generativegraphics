@@ -25,6 +25,9 @@ let sketch = function (p5Library: p5) {
             if (event.key === "g") {
                 hideGui();
             }
+            else if (event.key === "c") {
+                hideCursor();
+            }
         })
     }
 
@@ -39,8 +42,8 @@ let sketch = function (p5Library: p5) {
 
                 let diameter = settings.baseDiameter + 50 * Math.sin(angle);
 
-                let x = side * 0.5 + side * 0.45 * Math.sin(angle - time);
-                let y = side * 0.5 + side * 0.45 * Math.cos(angle);
+                let x = side * 0.5 + (side * 0.5 - diameter) * Math.sin(angle - time);
+                let y = side * 0.5 + (side * 0.5 - diameter) * Math.cos(angle);
 
                 let r = Math.sin(angle * 2 + time) * 127 + 128 + 200;
                 let g = Math.cos(angle * 4 - time) * 127 + 128;
@@ -57,6 +60,10 @@ let sketch = function (p5Library: p5) {
 
     function hideGui() {
         gui.show(gui._hidden)
+    }
+
+    function hideCursor() {
+        document.querySelector("body")!.classList.toggle("cursor-hidden");
     }
 
     p5Library.windowResized = function () {

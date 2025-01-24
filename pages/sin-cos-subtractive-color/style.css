@@ -10,3 +10,7 @@ canvas {
     top: 50%;
     transform: translateX(-50%) translateY(-50%);
 }
+
+.cursor-hidden {
+    cursor: none;
+}
