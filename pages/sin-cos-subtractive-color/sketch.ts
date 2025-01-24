@@ -8,8 +8,13 @@ let sketch = function (p5Library: p5) {
         backgroundColor: { r: 250, g: 250, b: 250 },
         backgroundOpacity: 255,
         amountOfPoints: 500,
-        baseDiameter: 50,
-        instances: 1
+        baseDiameter: 200,
+        instances: 10,
+        redMin: 127,
+        greenMin: 127,
+        blueMin: 127,
+        opacity: 10,
+        backgroundAnimationEnabled: false
     }
 
     let side: number;
@@ -33,10 +38,21 @@ let sketch = function (p5Library: p5) {
 
 
     p5Library.draw = function () {
-        p5Library.background(settings.backgroundColor.r, settings.backgroundColor.g, settings.backgroundColor.b, settings.backgroundOpacity);
+        let timeDelay = 0.001;
+        if (settings.backgroundAnimationEnabled) {
+            let bgTime = p5Library.millis() * timeDelay;
+            let bgR = Math.sin(2 + bgTime) * 127 + settings.redMin + 200;
+            let bgG = Math.cos(4 - bgTime) * 127 + settings.greenMin;
+            let bgB = Math.sin(5 + bgTime * 2) * 127 + settings.blueMin + 200;
+            p5Library.background(bgR, bgG, bgB, settings.backgroundOpacity);
+            setBackgroundColor({ r: bgR, g: bgG, b: bgB });
+        }
+        else {
+            p5Library.background(settings.backgroundColor.r, settings.backgroundColor.g, settings.backgroundColor.b, settings.backgroundOpacity);
+        }
 
         for (let instance = 0; instance < settings.instances; instance++) {
-            let time = (p5Library.millis() + instance * 1000) * 0.001;
+            let time = (p5Library.millis() + instance * 1000) * timeDelay;
             for (let circle = 0; circle < settings.amountOfPoints; circle++) {
                 let angle = (p5Library.TWO_PI * circle) / 100;
 
@@ -45,12 +61,11 @@ let sketch = function (p5Library: p5) {
                 let x = side * 0.5 + (side * 0.5 - diameter) * Math.sin(angle - time);
                 let y = side * 0.5 + (side * 0.5 - diameter) * Math.cos(angle);
 
-                let r = Math.sin(angle * 2 + time) * 127 + 128 + 200;
-                let g = Math.cos(angle * 4 - time) * 127 + 128;
-                let b = Math.sin(angle * 5 + time * 2) * 127 + 128 + 200;
+                let r = Math.sin(angle * 2 + time) * 127 + settings.redMin + 200;
+                let g = Math.cos(angle * 4 - time) * 127 + settings.greenMin;
+                let b = Math.sin(angle * 5 + time * 2) * 127 + settings.blueMin + 200;
 
-                if (r < 127) r += 200 - r;
-                p5Library.fill(r, g, b, 10);
+                p5Library.fill(r, g, b, settings.opacity);
 
                 p5Library.ellipse(x, y, diameter, diameter);
             }
@@ -86,16 +101,20 @@ let sketch = function (p5Library: p5) {
     function addGui() {
         gui = new GUI();
 
-        gui.addColor(settings, "backgroundColor", 255)
-            .name("Background")
+        let backgroundFolder = gui.addFolder("Background");
+        backgroundFolder.addColor(settings, "backgroundColor", 255)
+            .name("Color")
             .onChange(setBackgroundColor);
 
 
-        gui.add(settings, "backgroundOpacity")
-            .name("Background opacity")
+        backgroundFolder.add(settings, "backgroundOpacity")
+            .name("Opacity")
             .min(0)
             .max(255)
             .step(1);
+
+        backgroundFolder.add(settings, "backgroundAnimationEnabled")
+            .name("Animated");
 
         gui.add(settings, "amountOfPoints")
             .name("Points")
@@ -106,12 +125,39 @@ let sketch = function (p5Library: p5) {
         gui.add(settings, "baseDiameter")
             .name("Base diameter")
             .min(10)
-            .max(200)
+            .max(400)
             .step(1);
 
         gui.add(settings, "instances")
+            .name("Instances")
             .min(1)
             .max(20)
+            .step(1);
+
+        let colorFolder = gui.addFolder("Color");
+
+        colorFolder.add(settings, "redMin")
+            .name("Red min")
+            .min(0)
+            .max(255)
+            .step(1);
+
+        colorFolder.add(settings, "greenMin")
+            .name("Green min")
+            .min(0)
+            .max(255)
+            .step(1);
+
+        colorFolder.add(settings, "blueMin")
+            .name("Blue min")
+            .min(0)
+            .max(255)
+            .step(1);
+
+        colorFolder.add(settings, "opacity")
+            .name("Opacity")
+            .min(0)
+            .max(255)
             .step(1);
     }
 
