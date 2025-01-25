@@ -14,7 +14,9 @@ let sketch = function (p5Library: p5) {
         greenMin: 127,
         blueMin: 127,
         opacity: 10,
-        backgroundAnimationEnabled: false
+        alternateColorEnabled: false,
+        backgroundAnimationEnabled: false,
+        colorChangeSpeed: 0.1
     }
 
     let side: number;
@@ -36,6 +38,9 @@ let sketch = function (p5Library: p5) {
         })
     }
 
+    let redDirection = 1;
+    let greenDirection = 1;
+    let blueDirection = 1;
 
     p5Library.draw = function () {
         let timeDelay = 0.001;
@@ -49,6 +54,22 @@ let sketch = function (p5Library: p5) {
         }
         else {
             p5Library.background(settings.backgroundColor.r, settings.backgroundColor.g, settings.backgroundColor.b, settings.backgroundOpacity);
+        }
+
+        if (settings.alternateColorEnabled) {
+            if (settings.redMin <= 0 || settings.redMin >= 255) {
+                redDirection *= -1;
+            }
+            if (settings.greenMin <= 0 || settings.greenMin >= 255) {
+                greenDirection *= -1;
+            }
+            if (settings.blueMin <= 0 || settings.blueMin >= 255) {
+                blueDirection *= -1;
+            }
+            settings.redMin += 1 * redDirection * settings.colorChangeSpeed;
+            settings.greenMin += 1 * greenDirection * settings.colorChangeSpeed;
+            settings.blueMin += 1 * blueDirection * settings.colorChangeSpeed;
+            console.log(`${redDirection}${greenDirection}${blueDirection}`)
         }
 
         for (let instance = 0; instance < settings.instances; instance++) {
@@ -140,25 +161,37 @@ let sketch = function (p5Library: p5) {
             .name("Red min")
             .min(0)
             .max(255)
-            .step(1);
+            .step(1)
+            .listen();
 
         colorFolder.add(settings, "greenMin")
             .name("Green min")
             .min(0)
             .max(255)
-            .step(1);
+            .step(1)
+            .listen();
 
         colorFolder.add(settings, "blueMin")
             .name("Blue min")
             .min(0)
             .max(255)
-            .step(1);
+            .step(1)
+            .listen();
 
         colorFolder.add(settings, "opacity")
             .name("Opacity")
             .min(0)
             .max(255)
             .step(1);
+
+        colorFolder.add(settings, "alternateColorEnabled")
+            .name("Alternate");
+
+        colorFolder.add(settings, "colorChangeSpeed")
+            .name("Speed")
+            .min(0.01)
+            .max(2)
+            .step(0.01);
     }
 
 }
