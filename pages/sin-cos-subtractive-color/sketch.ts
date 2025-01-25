@@ -3,12 +3,18 @@ import GUI from 'lil-gui';
 
 let sketch = function (p5Library: p5) {
     let gui: GUI;
+    let colorMin = 0;
+    let colorMax = 255;
+    let baseDiameterMin = 10;
+    let baseDiameterMax = 400;
 
     let settings = {
         backgroundColor: { r: 250, g: 250, b: 250 },
         backgroundOpacity: 255,
         amountOfPoints: 500,
         baseDiameter: 200,
+        alternateBaseDiameterEnabled: false,
+        baseDiameterSpeed: 0.1,
         instances: 10,
         redMin: 127,
         greenMin: 127,
@@ -42,6 +48,8 @@ let sketch = function (p5Library: p5) {
     let greenDirection = 1;
     let blueDirection = 1;
 
+    let baseDiameterDirection = 1;
+
     p5Library.draw = function () {
         let timeDelay = 0.001;
         if (settings.backgroundAnimationEnabled) {
@@ -57,19 +65,26 @@ let sketch = function (p5Library: p5) {
         }
 
         if (settings.alternateColorEnabled) {
-            if (settings.redMin <= 0 || settings.redMin >= 255) {
+            if (settings.redMin <= colorMin || settings.redMin >= colorMax) {
                 redDirection *= -1;
             }
-            if (settings.greenMin <= 0 || settings.greenMin >= 255) {
+            if (settings.greenMin <= colorMin || settings.greenMin >= colorMax) {
                 greenDirection *= -1;
             }
-            if (settings.blueMin <= 0 || settings.blueMin >= 255) {
+            if (settings.blueMin <= colorMin || settings.blueMin >= colorMax) {
                 blueDirection *= -1;
             }
             settings.redMin += 1 * redDirection * settings.colorChangeSpeed;
             settings.greenMin += 1 * greenDirection * settings.colorChangeSpeed;
             settings.blueMin += 1 * blueDirection * settings.colorChangeSpeed;
             console.log(`${redDirection}${greenDirection}${blueDirection}`)
+        }
+
+        if (settings.alternateBaseDiameterEnabled) {
+            if (settings.baseDiameter <= baseDiameterMin || settings.baseDiameter >= baseDiameterMax) {
+                baseDiameterDirection *= -1;
+            }
+            settings.baseDiameter += 1 * baseDiameterDirection * settings.baseDiameterSpeed;
         }
 
         for (let instance = 0; instance < settings.instances; instance++) {
@@ -145,9 +160,19 @@ let sketch = function (p5Library: p5) {
 
         gui.add(settings, "baseDiameter")
             .name("Base diameter")
-            .min(10)
-            .max(400)
-            .step(1);
+            .min(baseDiameterMin)
+            .max(baseDiameterMax)
+            .step(1)
+            .listen();
+
+        gui.add(settings, "alternateBaseDiameterEnabled")
+            .name("Alternate base diameter");
+
+        gui.add(settings, "baseDiameterSpeed")
+            .name("Speed")
+            .min(0.01)
+            .max(2)
+            .step(0.01);
 
         gui.add(settings, "instances")
             .name("Instances")
@@ -159,22 +184,22 @@ let sketch = function (p5Library: p5) {
 
         colorFolder.add(settings, "redMin")
             .name("Red min")
-            .min(0)
-            .max(255)
+            .min(colorMin)
+            .max(colorMax)
             .step(1)
             .listen();
 
         colorFolder.add(settings, "greenMin")
             .name("Green min")
-            .min(0)
-            .max(255)
+            .min(colorMin)
+            .max(colorMax)
             .step(1)
             .listen();
 
         colorFolder.add(settings, "blueMin")
             .name("Blue min")
-            .min(0)
-            .max(255)
+            .min(colorMin)
+            .max(colorMax)
             .step(1)
             .listen();
 
