@@ -5,14 +5,14 @@ let sketch = function (p5Library: p5) {
     let gui: GUI;
     let colorMin = 0;
     let colorMax = 255;
-    let baseDiameterMin = 10;
-    let baseDiameterMax = 400;
 
     let settings = {
         backgroundColor: { r: 250, g: 250, b: 250 },
         backgroundOpacity: 255,
         amountOfPoints: 500,
         baseDiameter: 200,
+        baseDiameterMin: 10,
+        baseDiameterMax: 400,
         alternateBaseDiameterEnabled: false,
         baseDiameterSpeed: 0.1,
         instances: 10,
@@ -81,7 +81,7 @@ let sketch = function (p5Library: p5) {
         }
 
         if (settings.alternateBaseDiameterEnabled) {
-            if (settings.baseDiameter <= baseDiameterMin || settings.baseDiameter >= baseDiameterMax) {
+            if (settings.baseDiameter <= settings.baseDiameterMin || settings.baseDiameter >= settings.baseDiameterMax) {
                 baseDiameterDirection *= -1;
             }
             settings.baseDiameter += 1 * baseDiameterDirection * settings.baseDiameterSpeed;
@@ -152,23 +152,38 @@ let sketch = function (p5Library: p5) {
         backgroundFolder.add(settings, "backgroundAnimationEnabled")
             .name("Animated");
 
+
         gui.add(settings, "amountOfPoints")
             .name("Points")
             .min(20)
             .max(1000)
             .step(1);
+        let baseDiameterFolder = gui.addFolder("Base diameter");
 
-        gui.add(settings, "baseDiameter")
-            .name("Base diameter")
-            .min(baseDiameterMin)
-            .max(baseDiameterMax)
+
+        baseDiameterFolder.add(settings, "baseDiameterMin")
+            .name("Min")
+            .min(10)
+            .max(400)
+            .step(1);
+
+        baseDiameterFolder.add(settings, "baseDiameterMax")
+            .name("Max")
+            .min(10)
+            .max(400)
+            .step(1);
+
+        baseDiameterFolder.add(settings, "baseDiameter")
+            .name("Diameter")
+            .min(settings.baseDiameterMin)
+            .max(settings.baseDiameterMax)
             .step(1)
             .listen();
 
-        gui.add(settings, "alternateBaseDiameterEnabled")
+        baseDiameterFolder.add(settings, "alternateBaseDiameterEnabled")
             .name("Alternate base diameter");
 
-        gui.add(settings, "baseDiameterSpeed")
+        baseDiameterFolder.add(settings, "baseDiameterSpeed")
             .name("Speed")
             .min(0.01)
             .max(2)
