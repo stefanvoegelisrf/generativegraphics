@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import inject from '@rollup/plugin-inject';
 
 export default defineConfig({
     base: './',
@@ -7,5 +8,10 @@ export default defineConfig({
     },
     build: {
         outDir: 'dist'
-    }
+    },
+    plugins: [
+        inject({
+            p5: 'p5'
+        }),
+    ],
 });
