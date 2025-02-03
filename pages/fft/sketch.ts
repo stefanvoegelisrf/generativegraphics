@@ -1,43 +1,50 @@
 import p5 from 'p5';
 import 'p5/lib/addons/p5.sound';
 import midnightShadowUrl from './sound/midnight-shadow.mp3';
+import arpReverUrl from './sound/arp-reverb.mp3';
 import GUI from 'lil-gui';
 
 let sketch = function (p5Library: p5) {
     let sound: p5.SoundFile;
     let fft: p5.FFT;
     let gui: GUI;
+
+    let spectrumWidth = 32;
+
     let settings = {
         volume: 1,
         playPause: function () {
             if (!sound) return;
-            console.log(sound)
             if (sound.isPlaying()) {
                 sound.pause();
             }
             else {
                 sound.play();
             }
-        }
+        },
+        rectangleWidth: 10
     }
 
     p5Library.preload = function () {
-        prepareSound(midnightShadowUrl)
+        // prepareSound(midnightShadowUrl)
+        prepareSound(arpReverUrl);
     }
 
     p5Library.setup = function () {
         p5Library.createCanvas(p5Library.windowWidth, p5Library.windowHeight);
-        fft = new p5.FFT(.8, 256);
+        fft = new p5.FFT(.9, spectrumWidth);
         addGui();
     }
     p5Library.draw = function () {
-        p5Library.background(255);
+        p5Library.background(0, 30);
         let spectrum = fft.analyze()
-        p5Library.translate(p5Library.width * 0.5 - spectrum.length * 0.5, 0);
+        p5Library.noStroke();
+        p5Library.translate(p5Library.width * 0.5 - spectrum.length * settings.rectangleWidth * 0.5, 0);
         for (let i = 0; i < spectrum.length; i++) {
             let amplitude = spectrum[i];
+            p5Library.fill(amplitude, 30);
             let y = p5Library.map(amplitude, 0, 255, p5Library.height, 0);
-            p5Library.line(i, p5Library.height, i, y);
+            p5Library.rect(i * settings.rectangleWidth, y, settings.rectangleWidth, p5Library.windowHeight - y);
         }
     }
 
@@ -69,6 +76,12 @@ let sketch = function (p5Library: p5) {
 
         gui.add(settings, "playPause")
             .name("Toggle sound");
+
+        gui.add(settings, "rectangleWidth")
+            .name("Rectangle width")
+            .min(1)
+            .max(30)
+            .step(1);
     }
 }
 let instantiatedSketch = new p5(sketch);
