@@ -26,8 +26,8 @@ let sketch = function (p5Library: p5) {
     }
 
     p5Library.preload = function () {
-        // prepareSound(midnightShadowUrl)
-        prepareSound(arpReverUrl);
+        prepareSound(midnightShadowUrl)
+        // prepareSound(arpReverUrl);
     }
 
     p5Library.setup = function () {
@@ -39,6 +39,19 @@ let sketch = function (p5Library: p5) {
         p5Library.background(0, 30);
         let spectrum = fft.analyze()
         p5Library.noStroke();
+
+        const bassEnergy = fft.getEnergy("bass");
+        p5Library.fill(200, 0, 100, 10);
+        p5Library.circle(p5Library.width * 0.5, p5Library.height * 0.5, p5Library.map(bassEnergy, 0, 255, 0, p5Library.width * 0.5));
+
+        const midEnergy = fft.getEnergy("mid");
+        p5Library.fill(100, 0, 0, 10);
+        p5Library.circle(p5Library.width * 0.5, p5Library.height * 0.5, p5Library.map(midEnergy, 0, 255, 0, p5Library.width * 0.5));
+
+        const trebleEnergy = fft.getEnergy("treble")
+        p5Library.fill(100, 0, 200, 10);
+        p5Library.circle(p5Library.width * 0.5, p5Library.height * 0.5, p5Library.map(trebleEnergy, 0, 255, 0, p5Library.width * 0.5));
+
         p5Library.translate(p5Library.width * 0.5 - spectrum.length * settings.rectangleWidth * 0.5, 0);
         for (let i = 0; i < spectrum.length; i++) {
             let amplitude = spectrum[i];
@@ -46,6 +59,7 @@ let sketch = function (p5Library: p5) {
             let y = p5Library.map(amplitude, 0, 255, p5Library.height, 0);
             p5Library.rect(i * settings.rectangleWidth, y, settings.rectangleWidth, p5Library.windowHeight - y);
         }
+
     }
 
     p5Library.windowResized = function () {
