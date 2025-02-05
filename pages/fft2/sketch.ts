@@ -27,7 +27,10 @@ let sketch = function (p5Library: p5) {
         boxSize: 50,
         amountOfBoxes: 10,
         spacingMultiplier: .2,
-        min: 0
+        min: 0,
+        boxOpacity: 30,
+        strokeColor: { r: 0, g: 0, b: 0 },
+        strokeOpacity: 30
     }
 
     p5Library.preload = function () {
@@ -42,6 +45,7 @@ let sketch = function (p5Library: p5) {
     p5Library.draw = function () {
         p5Library.orbitControl();
         p5Library.background(255);
+        p5Library.stroke(settings.strokeColor.r, settings.strokeColor.g, settings.strokeColor.b, settings.strokeOpacity);
         p5Library.noFill();
         if (isInitializingGrid) return;
         let spectrum = fft.analyze()
@@ -59,7 +63,7 @@ let sketch = function (p5Library: p5) {
             for (let y = 0; y < settings.amountOfBoxes; y++) {
                 for (let z = 0; z < settings.amountOfBoxes; z++) {
                     if (grid[x][y][z] > settings.min) {
-                        p5Library.fill(grid[x][y][z], 0, 200);
+                        p5Library.fill(grid[x][y][z], 0, 200, settings.boxOpacity);
                     }
                     else {
                         p5Library.noFill();
@@ -79,9 +83,8 @@ let sketch = function (p5Library: p5) {
 
     let initializeGrid = function () {
         isInitializingGrid = true;
-        let spectrumWidth=getNearestPowerOf2(settings.amountOfBoxes * settings.amountOfBoxes * settings.amountOfBoxes);
+        let spectrumWidth = getNearestPowerOf2(settings.amountOfBoxes * settings.amountOfBoxes * settings.amountOfBoxes);
         fft = new FFT(smoothing, spectrumWidth);
-        console.log(spectrumWidth);
         grid = [];
         distanceFromCenter = [];
         for (let x = 0; x < settings.amountOfBoxes; x++) {
@@ -160,6 +163,21 @@ let sketch = function (p5Library: p5) {
 
         gui.add(settings, "min")
             .name("Min")
+            .min(0)
+            .max(255)
+            .step(1);
+
+        gui.add(settings, "boxOpacity")
+            .name("Box opacity")
+            .min(0)
+            .max(255)
+            .step(1);
+
+        gui.addColor(settings, "strokeColor", 255)
+            .name("Stroke color");
+
+        gui.add(settings, "strokeOpacity")
+            .name("Stroke opacity")
             .min(0)
             .max(255)
             .step(1);
