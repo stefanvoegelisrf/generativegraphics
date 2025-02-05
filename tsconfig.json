@@ -1,6 +1,12 @@
 {
   "compilerOptions": {
-    "types": ["vite/client"],
-    "esModuleInterop": true
+    "types": [
+      "vite/client"
+    ],
+    "esModuleInterop": true,
+    "lib": [
+      "ES2015",
+      "DOM"
+    ]
   }
 }

@@ -1,7 +1,7 @@
 import p5 from 'p5';
 import 'p5/lib/addons/p5.sound';
-import midnightShadowUrl from './sound/midnight-shadow.mp3';
-import arpReverUrl from './sound/arp-reverb.mp3';
+import midnightShadowUrl from '../../sound/midnight-shadow.mp3';
+import arpReverUrl from '../../sound/arp-reverb.mp3';
 import GUI from 'lil-gui';
 
 let sketch = function (p5Library: p5) {
