@@ -28,7 +28,6 @@ let sketch = function (p5Library: p5) {
         amountOfBoxes: 10,
         spacingMultiplier: .2,
         min: 0,
-        boxOpacity: 30,
         strokeColor: { r: 0, g: 0, b: 0 },
         strokeOpacity: 30
     }
@@ -63,7 +62,7 @@ let sketch = function (p5Library: p5) {
             for (let y = 0; y < settings.amountOfBoxes; y++) {
                 for (let z = 0; z < settings.amountOfBoxes; z++) {
                     if (grid[x][y][z] > settings.min) {
-                        p5Library.fill(grid[x][y][z], 0, 200, settings.boxOpacity);
+                        p5Library.fill(grid[x][y][z], 0, 200, grid[x][y][z]);
                     }
                     else {
                         p5Library.noFill();
@@ -163,12 +162,6 @@ let sketch = function (p5Library: p5) {
 
         gui.add(settings, "min")
             .name("Min")
-            .min(0)
-            .max(255)
-            .step(1);
-
-        gui.add(settings, "boxOpacity")
-            .name("Box opacity")
             .min(0)
             .max(255)
             .step(1);
