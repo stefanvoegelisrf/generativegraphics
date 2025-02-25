@@ -173,10 +173,10 @@ let sketch = function (p5Library: p5) {
         gui = new GUI();
         gui.add(settings, "columns").name("Columns").min(1).max(200).step(1).onChange(calculateBrightness);
         gui.add(settings, "rows").name("Rows").min(1).max(200).step(1).onChange(calculateBrightness);
-        gui.add(settings, "cellSizeMultiplier").name("Cell size multiplier").min(0.5).max(5).step(0.1);
-        gui.add(settings, "movementIntensity").name("Movement intensity").min(0.5).max(5).step(0.1);
-        gui.add(settings, "sizeNoiseMultiplier").name("Size noise multiplier").min(0.5).max(5).step(0.1);
-        gui.add(settings, "movementNoiseMultiplier").name("Movement noise multiplier").min(0.5).max(5).step(0.1);
+        gui.add(settings, "cellSizeMultiplier").name("Cell size multiplier").min(0.5).max(20).step(0.1);
+        gui.add(settings, "movementIntensity").name("Movement intensity").min(0.5).max(20).step(0.1);
+        gui.add(settings, "sizeNoiseMultiplier").name("Size noise multiplier").min(0.5).max(20).step(0.1);
+        gui.add(settings, "movementNoiseMultiplier").name("Movement noise multiplier").min(0.5).max(20).step(0.1);
         gui.add(settings, "fillOrStroke").name("Fill or stroke").options(["fill", "stroke"])
             .onChange(() => {
                 setFillOrStroke();
