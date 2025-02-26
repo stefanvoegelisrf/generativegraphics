@@ -48,6 +48,7 @@ let sketch = function (p5Library: p5) {
     "./Sagom.png",
     "./Chiakla.png",
     "./Sukrup.png",
+    "./Kruxeo.png",
   ]
 
   p5Library.preload = function () {
@@ -251,6 +252,7 @@ let sketch = function (p5Library: p5) {
   }
 
   function replaceCurrentImage() {
+    imageChangeIntervalChanged();
     currentImage = images[currentImageIndex]
     isTransitioning = false;
     valuesReplaced = 0;
