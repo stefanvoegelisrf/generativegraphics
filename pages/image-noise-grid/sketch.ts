@@ -35,7 +35,8 @@ let sketch = function (p5Library: p5) {
     backgroundColor: [255, 255, 255],
     backgroundOpacity: 5,
     toggleImageChangeInterval: toggleImageChangeInterval,
-    imageChangeIntervalInMs: 5000
+    imageChangeIntervalInMs: 5000,
+    frameRate: 30
   }
   let images: Array<DisplayImage> = [];
   let currentImage: DisplayImage;
@@ -70,6 +71,7 @@ let sketch = function (p5Library: p5) {
     p5Library.rectMode(p5Library.CENTER);
     setFillOrStroke();
     processImages();
+    setFrameRate();
   }
   p5Library.draw = function () {
     p5Library.background(
@@ -147,6 +149,10 @@ let sketch = function (p5Library: p5) {
     }
   }
 
+  function setFrameRate() {
+    p5Library.frameRate(settings.frameRate);
+  }
+
   function processImages() {
     isCalculatingBrightness = true;
     for (let image of images) {
@@ -216,46 +222,60 @@ let sketch = function (p5Library: p5) {
   function transitionToNextImage() {
     if (isTransitioning) return;
     isTransitioning = true;
-    currentImageIndex++;
-    if (currentImageIndex > images.length - 1) {
-      currentImageIndex = 0;
-    }
-    replaceBrightnessValues();
+    currentImageIndex = (currentImageIndex + 1) % images.length;
+    prepareBrightnessTransition();
   }
-  let nextBrightnessValues: number[][] = [];
 
-  function replaceBrightnessValues() {
-    nextBrightnessValues = structuredClone(images[currentImageIndex].brightnessValues);
-    setTimeout(replaceNextBrightnessValue);
+  let nextBrightnessValues: number[][] = [];
+  let valuesToReplace: { i: number; j: number }[] = [];
+
+  let previousMillis = 0;
+  function prepareBrightnessTransition() {
+    nextBrightnessValues = images[currentImageIndex].brightnessValues.map(row => [...row]);
+    valuesToReplace = [];
+
+    for (let i = 0; i < settings.columns; i++) {
+      for (let j = 0; j < settings.rows; j++) {
+        if (nextBrightnessValues[i][j] !== undefined) {
+          valuesToReplace.push({ i, j });
+        }
+      }
+    }
+    replaceNextBrightnessValue();
   }
   let valuesReplaced = 0;
 
   function replaceNextBrightnessValue() {
-    let hasValuesToReplace = nextBrightnessValues.find(values => values.find(value => value !== undefined) !== undefined) !== undefined;
-    if (!hasValuesToReplace) {
+    if (valuesToReplace.length === 0) {
       replaceCurrentImage();
       return;
     }
-    let brightnessValue: number | undefined;
-    let i: number | undefined;
-    let j: number | undefined;
-    while (brightnessValue === undefined) {
-      i = Math.floor(p5Library.random(0, settings.columns));
-      j = Math.floor(p5Library.random(0, settings.rows));
-      brightnessValue = nextBrightnessValues[i][j];
+    const currentMillis = p5Library.millis();
+    if (!((previousMillis ) < currentMillis)) {
+      setTimeout(replaceNextBrightnessValue, 1);
+      return;
+    } else {
+      previousMillis = currentMillis;
     }
-    currentImage.brightnessValues[i][j] = brightnessValue;
+
+    // Pick a random position from available list
+    const randomIndex = Math.floor(p5Library.random(0, valuesToReplace.length));
+    const { i, j } = valuesToReplace[randomIndex];
+
+    // Apply brightness and remove from the list
+    currentImage.brightnessValues[i][j] = nextBrightnessValues[i][j];
     nextBrightnessValues[i][j] = undefined;
+    valuesToReplace.splice(randomIndex, 1);
     valuesReplaced++;
     console.log(valuesReplaced)
-    setTimeout(replaceNextBrightnessValue);
+    replaceNextBrightnessValue();
   }
+
 
   function replaceCurrentImage() {
     imageChangeIntervalChanged();
     currentImage = images[currentImageIndex]
     isTransitioning = false;
-    valuesReplaced = 0;
     nextBrightnessValues = [];
     console.log("Image replaced")
   }
@@ -310,6 +330,7 @@ let sketch = function (p5Library: p5) {
     gui.add(settings, "backgroundOpacity").name("Background opacity").min(0).max(100).step(1);
     gui.add(settings, "toggleImageChangeInterval").name("Toggle automatic image change");
     gui.add(settings, "imageChangeIntervalInMs").name("Image change interval in milliseconds").min(500).max(50000).step(100).onChange(imageChangeIntervalChanged);
+    gui.add(settings, "frameRate").name("Frame rate").min(1).max(60).step(1).onChange(setFrameRate);
   }
 }
 let instantiatedSketch = new p5(sketch);
