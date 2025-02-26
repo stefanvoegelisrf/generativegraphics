@@ -20,8 +20,8 @@ class DisplayImage {
 let sketch = function (p5Library: p5) {
   let gui: GUI;
   let settings = {
-    columns: 100,
-    rows: 100,
+    columns: 50,
+    rows: 50,
     shapeType: "circle",
     blendModeType: p5Library.BLEND,
     cellSizeMultiplier: 3,
@@ -210,14 +210,54 @@ let sketch = function (p5Library: p5) {
       imageChangeInterval = null;
     }
   }
+  let isTransitioning = false;
 
   function transitionToNextImage() {
+    if (isTransitioning) return;
+    isTransitioning = true;
     currentImageIndex++;
     if (currentImageIndex > images.length - 1) {
       currentImageIndex = 0;
     }
-    currentImage = images[currentImageIndex]
+    replaceBrightnessValues();
   }
+  let nextBrightnessValues: number[][] = [];
+
+  function replaceBrightnessValues() {
+    nextBrightnessValues = structuredClone(images[currentImageIndex].brightnessValues);
+    setTimeout(replaceNextBrightnessValue);
+  }
+  let valuesReplaced = 0;
+
+  function replaceNextBrightnessValue() {
+    let hasValuesToReplace = nextBrightnessValues.find(values => values.find(value => value !== undefined) !== undefined) !== undefined;
+    if (!hasValuesToReplace) {
+      replaceCurrentImage();
+      return;
+    }
+    let brightnessValue: number | undefined;
+    let i: number | undefined;
+    let j: number | undefined;
+    while (brightnessValue === undefined) {
+      i = Math.floor(p5Library.random(0, settings.columns));
+      j = Math.floor(p5Library.random(0, settings.rows));
+      brightnessValue = nextBrightnessValues[i][j];
+    }
+    currentImage.brightnessValues[i][j] = brightnessValue;
+    nextBrightnessValues[i][j] = undefined;
+    valuesReplaced++;
+    console.log(valuesReplaced)
+    setTimeout(replaceNextBrightnessValue);
+  }
+
+  function replaceCurrentImage() {
+    currentImage = images[currentImageIndex]
+    isTransitioning = false;
+    valuesReplaced = 0;
+    nextBrightnessValues = [];
+    console.log("Image replaced")
+  }
+
   p5Library.windowResized = function () {
     p5Library.resizeCanvas(p5Library.windowWidth, p5Library.windowHeight);
   }
