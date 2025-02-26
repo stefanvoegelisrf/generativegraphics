@@ -35,7 +35,7 @@ let sketch = function (p5Library: p5) {
     backgroundColor: [255, 255, 255],
     backgroundOpacity: 5,
     toggleImageChangeInterval: toggleImageChangeInterval,
-    imageChangeIntervalInMs: 5000,
+    imageChangeIntervalInMs: 2000,
     frameRate: 30
   }
   let images: Array<DisplayImage> = [];
@@ -50,6 +50,9 @@ let sketch = function (p5Library: p5) {
     "./Chiakla.png",
     "./Sukrup.png",
     "./Kruxeo.png",
+    "./Jixul.png",
+    "./Povon.png",
+    "./Tesu.png",
   ]
 
   p5Library.preload = function () {
