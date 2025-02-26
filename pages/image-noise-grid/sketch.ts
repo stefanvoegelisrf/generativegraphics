@@ -20,9 +20,9 @@ class DisplayImage {
 let sketch = function (p5Library: p5) {
   let gui: GUI;
   let settings = {
-    columns: 50,
-    rows: 50,
-    shapeType: "circle",
+    columns: 100,
+    rows: 100,
+    shapeType: "square",
     blendModeType: p5Library.BLEND,
     cellSizeMultiplier: 3,
     movementIntensity: 0.5,
@@ -35,7 +35,7 @@ let sketch = function (p5Library: p5) {
     backgroundColor: [255, 255, 255],
     backgroundOpacity: 5,
     toggleImageChangeInterval: toggleImageChangeInterval,
-    imageChangeIntervalInMs: 2000,
+    imageChangeIntervalInMs: 3000,
     frameRate: 30
   }
   let images: Array<DisplayImage> = [];
@@ -244,21 +244,25 @@ let sketch = function (p5Library: p5) {
         }
       }
     }
-    replaceNextBrightnessValue();
+    replaceNextBatchOfPixels();
   }
+
+
+  function replaceNextBatchOfPixels() {
+    if (!isTransitioning) return;
+    let batchSize = settings.columns * settings.rows * 0.05;
+    for (let i = 0; i < batchSize; i++) {
+      replaceNextBrightnessValue();
+    }
+    setTimeout(replaceNextBatchOfPixels, 10)
+  }
+
   let valuesReplaced = 0;
 
   function replaceNextBrightnessValue() {
     if (valuesToReplace.length === 0) {
       replaceCurrentImage();
       return;
-    }
-    const currentMillis = p5Library.millis();
-    if (!((previousMillis ) < currentMillis)) {
-      setTimeout(replaceNextBrightnessValue, 1);
-      return;
-    } else {
-      previousMillis = currentMillis;
     }
 
     // Pick a random position from available list
@@ -271,7 +275,6 @@ let sketch = function (p5Library: p5) {
     valuesToReplace.splice(randomIndex, 1);
     valuesReplaced++;
     console.log(valuesReplaced)
-    replaceNextBrightnessValue();
   }
 
 
