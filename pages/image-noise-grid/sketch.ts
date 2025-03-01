@@ -27,17 +27,25 @@ let sketch = function (p5Library: p5) {
     cellSizeMultiplier: 3,
     movementIntensity: 0.5,
     sizeNoiseMultiplier: 1,
-    movementNoiseMultiplier: 2.7,
-    fillOrStroke: "fill",
+    movementNoiseMultiplier: 7,
+    fillOrStroke: "stroke",
     fillOpacity: 20,
     strokeOpacity: 100,
-    enableRotation: false,
+    enableRotation: true,
     backgroundColor: [255, 255, 255],
     backgroundOpacity: 5,
     toggleImageChangeInterval: toggleImageChangeInterval,
     imageChangeIntervalInMs: 3000,
     frameRate: 30
   }
+
+  const luminanceOrderedArrays = {
+    asciiPaulBourke: ["$", "@", "B", "%", "8", "&", "W", "M", "#", "*", "o", "a", "h", "k", "b", "d", "p", "q", "w", "m", "Z", "O", "0", "Q", "L", "C", "J", "U", "Y", "X", "z", "c", "v", "u", "n", "x", "r", "j", "f", "t", "/", "|", "(", ")", "1", "{", "}", "[", "]", "?", "-", "_", "+", "~", "<", ">", "i", "!", "l", "I", ";", ":", "^", "`", "'", ".", " "],
+    asciiCodepage437: ["█", "▓", "▒", "░"],
+    asciiNumerical: ["0", "8", "9", "6", "4", "5", "2", "3", "1", "7"],
+    emoji: ["🍒", "🐞", "🍅", "🦞", "🍁", "🏵️", "🦐", "🍊", "🐅", "🥐", "🐆", "🌞", "🌽", "✨", "🔑", "📀", "🥑", "🌱", "🍀", "🧩", "🦎", "🌿", "🌲", "🪴", "🦠", "♂️", "🩱", "🫂", "🐟", "👟", "🧵", "🫐", "🌌", "🔮", "🪻", "👾", "🍇", "🌆", "⚗️", "🍠", "🧶", "🌺", "🍧", "💒", "🦩", "🌷", "🧼", "🪷", "🌸", "🍥", "💮", "🦷", "🍽️", "☁️"]
+  }
+
   let images: Array<DisplayImage> = [];
   let currentImage: DisplayImage;
   let currentImageIndex = 0;
@@ -53,6 +61,8 @@ let sketch = function (p5Library: p5) {
     "./Jixul.png",
     "./Povon.png",
     "./Tesu.png",
+    "./Noarkog.png",
+    "./Mohoy.png",
   ]
 
   p5Library.preload = function () {
@@ -127,7 +137,7 @@ let sketch = function (p5Library: p5) {
           p5Library.min(cellWidth, cellHeight) *
           settings.cellSizeMultiplier;
 
-        let opacity = (settings.fillOrStroke === "fill" ? settings.fillOpacity : settings.strokeOpacity) * 0.01 * 255;
+        let opacity = (settings.fillOrStroke === "fill" ? settings.fillOpacity : settings.strokeOpacity);
         let color = p5Library.color(currentImage.brightnessValues[i][j] * 255, opacity);
 
         if (settings.fillOrStroke === "fill") {
@@ -141,11 +151,30 @@ let sketch = function (p5Library: p5) {
         if (settings.enableRotation) {
           p5Library.rotate(p5Library.noise(i * 0.1, j * 0.1, p5Library.frameCount * 0.01) * p5Library.TWO_PI);
         }
-        if (settings.shapeType === "square") {
-          p5Library.rectMode(p5Library.CENTER);
-          p5Library.rect(0, 0, cellSize, cellSize);
-        } else {
-          p5Library.ellipse(0, 0, cellSize, cellSize);
+        switch (settings.shapeType) {
+          case "square":
+            p5Library.rectMode(p5Library.CENTER);
+            p5Library.rect(0, 0, cellSize, cellSize);
+            break;
+          case "sphere":
+            p5Library.ellipse(0, 0, cellSize, cellSize);
+            break;
+          case "asciiPaulBourke":
+            let indexFromPaulBourkeArray = Math.floor(p5Library.map(currentImage.brightnessValues[i][j], 0, 1, 0, luminanceOrderedArrays.asciiPaulBourke.length));
+            p5Library.text(luminanceOrderedArrays.asciiPaulBourke[indexFromPaulBourkeArray], 0, 0)
+            break;
+          case "asciiCodepage437":
+            let indexFromCodepage437Array = Math.floor(p5Library.map(currentImage.brightnessValues[i][j], 0, 1, 0, luminanceOrderedArrays.asciiCodepage437.length));
+            p5Library.text(luminanceOrderedArrays.asciiCodepage437[indexFromCodepage437Array], 0, 0);
+            break;
+          case "asciiNumerical":
+            let indexFromAsciiNumericalArray = Math.floor(p5Library.map(currentImage.brightnessValues[i][j], 0, 1, 0, luminanceOrderedArrays.asciiNumerical.length));
+            p5Library.text(luminanceOrderedArrays.asciiNumerical[indexFromAsciiNumericalArray], 0, 0);
+            break;
+          case "emoji":
+            let indexFromEmojiArray = Math.floor(p5Library.map(currentImage.brightnessValues[i][j], 0, 1, 0, luminanceOrderedArrays.emoji.length));
+            p5Library.text(luminanceOrderedArrays.emoji[indexFromEmojiArray], 0, 0);
+            break;
         }
         p5Library.pop();
       }
@@ -314,10 +343,10 @@ let sketch = function (p5Library: p5) {
       .onChange(() => {
         setFillOrStroke();
       });
-    gui.add(settings, "fillOpacity").name("Fill opacity").min(0).max(100).step(1);
-    gui.add(settings, "strokeOpacity").name("Stroke opacity").min(0).max(100).step(1);
+    gui.add(settings, "fillOpacity").name("Fill opacity").min(0).max(255).step(1);
+    gui.add(settings, "strokeOpacity").name("Stroke opacity").min(0).max(255).step(1);
     gui.add(settings, "enableRotation").name("Enable rotation");
-    gui.add(settings, "shapeType").name("Shape type").options(["square", "sphere"]);
+    gui.add(settings, "shapeType").name("Shape type").options(["square", "sphere", "asciiPaulBourke", "asciiCodepage437", "asciiNumerical", "emoji"]);
     gui.add(settings, "blendModeType").name("Blend mode").options([
       p5Library.BLEND,
       p5Library.ADD,
