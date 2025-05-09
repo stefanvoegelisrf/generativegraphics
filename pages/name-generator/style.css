@@ -5,6 +5,18 @@
 
 :root {
     font-family: sans-serif;
+    --spacing-xs: .5rem;
+    --spacing-s: 1rem;
+    --spacing-m: 2rem;
+    --border-radius-s: .5rem;
+    --color-alabaster-0: #f5ebe0;
+    --color-alabaster-light-50: #faf5f0;
+    --color-pastel-gray-0: #d6ccc2;
+    --color-pastel-gray-dark-20: #aba39b;
+    --color-bone-0: #e3d5ca;
+    --color-bone-dark-80: #2d2b28;
+    color: var(--color-bone-dark-80);
+
 }
 
 h1,
@@ -15,34 +27,64 @@ h2 {
 main {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
+    justify-content: start;
+    align-items: start;
+    gap: var(--spacing-m);
     width: 80%;
-    margin: 0 auto;
+    margin: var(--spacing-xs) auto;
+    background-color: var(--color-alabaster-light-50);
+    padding: var(--spacing-m);
+    border-radius: var(--border-radius-s);
 }
 
-#settingsContainer {
+button {
+    border: none;
+    padding: 1rem;
+    background-color: var(--color-pastel-gray-0);
+    border-radius: var(--border-radius-s);
+}
+
+
+button:hover {
+    background-color: var(--color-pastel-gray-dark-20);
+    cursor: pointer;
+}
+
+#title {
+    padding: var(--spacing-s);
+}
+
+#settings-container {
     display: flex;
     flex-direction: row;
-    gap: 1rem;
+    flex-wrap: wrap;
+    gap: var(--spacing-s);
+    padding: var(--spacing-s);
 }
 
-#nameContainer {
+.setting {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+#name-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+    padding: var(--spacing-s);
+}
+
+#name-list {
     display: flex;
     flex-wrap: wrap;
-    gap: .2rem;
+    gap: var(--spacing-xs);
 }
 
 .name-item {
-    padding: 1rem;
-    background-color: lightgray;
-    border-radius: 5rem;
-}
-
-.name-item:hover {
-    background-color: gray;
-    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
 }
 
 .name-item::after {
@@ -65,25 +107,25 @@ main {
 }
 
 #history {
-    width: 100%;
-}
-
-#historyEntries {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    padding: var(--spacing-s);
+    gap: var(--spacing-s);
 }
 
-.history-entry {
+#history-entries {
     display: flex;
-    gap: .2rem;
-    align-items: center;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.history-entry-name-list {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-xs);
     flex-wrap: wrap;
 }
 
-#generateNames {
-    padding: 1rem;
-    background-color: white;
-    border: .1rem solid black;
-    border-radius: 5rem;
+summary {
+    cursor: pointer;
 }

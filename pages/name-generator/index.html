@@ -11,30 +11,42 @@
 
 <body>
     <main>
-        <h1>Random Name Generator</h1>
-        <h2>Settings</h2>
-        <div id="settingsContainer">
-            <label for="minSyllables">Min Syllables</label>
-            <input id="minSyllables" type="range" min="3" max="10" step="1" value="4" oninput="this.nextElementSibling.value = this.value"/>
-            <output for="minSyllables">4</output>
-            <label for="maxSyllables">Max Syllables</label>
-            <input id="maxSyllables" type="range" min="3" max="10" step="1" value="5" oninput="this.nextElementSibling.value = this.value"/>
-            <output for="maxSyllables">5</output>
-            <label for="amountOfNames">Amount of names</label>
-            <input id="amountOfNames" type="range" min="1" max="50" step="1" value="15" oninput="this.nextElementSibling.value = this.value"/>
-            <output for="amountOfNames">15</output>
+        <div id="title">
+            <h1>Random Name Generator</h1>
+            <small>Generate random names based on <a href="https://dwheeler.com/totro.html">Totro name generator</a></small>
         </div>
-        <h2>Generated Names</h2>
-        <div id="nameContainer"></div>
-        <button type="button" id="generateNames">Generate names</button>
-        <details id="history">
-            <summary>
-                History
-            </summary>
-            <div id="historyEntries">
-                <h1>History</h1>
+        <form id="settings-container">
+            <div class="setting">
+                <label for="minSyllables">Min Syllables</label>
+                <input id="minSyllables" type="range" min="3" max="10" step="1" value="4"
+                    oninput="this.nextElementSibling.value = this.value" />
+                <output for="minSyllables">4</output>
             </div>
-        </details>
+            <div class="setting">
+                <label for="maxSyllables">Max Syllables</label>
+                <input id="maxSyllables" type="range" min="3" max="10" step="1" value="5"
+                    oninput="this.nextElementSibling.value = this.value" />
+                <output for="maxSyllables">5</output>
+            </div>
+            <div class="setting">
+                <label for="amountOfNames">Amount of names</label>
+                <input id="amountOfNames" type="range" min="1" max="50" step="1" value="15"
+                    oninput="this.nextElementSibling.value = this.value" />
+                <output for="amountOfNames">15</output>
+            </div>
+            <button type="button" id="generate-names">Generate names</button>
+
+        </form>
+        <div id="name-container">
+            <h2>Generated names</h2>
+            <div id="name-list">
+            </div>
+        </div>
+        <div id="history">
+            <h2>History</h2>
+            <div id="history-entries">
+            </div>
+        </div>
     </main>
 </body>
 
