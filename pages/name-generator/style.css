@@ -111,12 +111,14 @@ button:hover {
     flex-direction: column;
     padding: var(--spacing-s);
     gap: var(--spacing-s);
+    width: 100%;
 }
 
 #history-entries {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xs);
+    width: 100%;
 }
 
 .history-entry-name-list {
@@ -128,4 +130,8 @@ button:hover {
 
 summary {
     cursor: pointer;
+    padding: var(--spacing-s);
+    margin-bottom: var(--spacing-xs);
+    background-color: var(--color-alabaster-0);
+    border-radius: var(--border-radius-s);
 }
