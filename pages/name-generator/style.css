@@ -32,9 +32,11 @@ main {
     gap: var(--spacing-m);
     width: 80%;
     margin: var(--spacing-xs) auto;
-    background-color: var(--color-alabaster-light-50);
+    background-color: rgb(from var(--color-alabaster-light-50) r g b / 50%);
     padding: var(--spacing-m);
     border-radius: var(--border-radius-s);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 button {
