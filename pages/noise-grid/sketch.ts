@@ -11,7 +11,7 @@ let sketch = function (p5Library: p5) {
         cellSizeMultiplier: 2.5,
         movementIntensity: 3,
         sizeNoiseMultiplier: 2,
-        movementNoiseMultiplier: 2.7,
+        movementNoiseMultiplier: .5,
         fillOrStroke: "stroke",
         fillOpacity: 50,
         strokeOpacity: 40,
@@ -19,6 +19,7 @@ let sketch = function (p5Library: p5) {
         backgroundColor: [0, 0, 0],
         backgroundColorHSB: [0, 0, 0],
         backgroundOpacity: 5,
+        scale: .8
     }
 
 
@@ -35,6 +36,11 @@ let sketch = function (p5Library: p5) {
         setFillOrStroke();
     }
     p5Library.draw = function () {
+        p5Library.push();
+        let offsetX = p5Library.width * 0.5 * (1 - settings.scale);
+        let offsetY = p5Library.height * 0.5 * (1 - settings.scale);
+        p5Library.translate(offsetX, offsetY);
+        p5Library.scale(settings.scale);
         p5Library.background(
             settings.backgroundColorHSB[0],
             settings.backgroundColorHSB[1],
@@ -43,6 +49,7 @@ let sketch = function (p5Library: p5) {
         );
         let cellWidth = p5Library.width / settings.columns;
         let cellHeight = p5Library.height / settings.rows;
+
         for (let i = 0; i < settings.columns; i++) {
             for (let j = 0; j < settings.rows; j++) {
                 let x =
@@ -92,6 +99,7 @@ let sketch = function (p5Library: p5) {
                 p5Library.pop();
             }
         }
+        p5Library.pop();
     }
 
     p5Library.windowResized = function () {
@@ -144,6 +152,7 @@ let sketch = function (p5Library: p5) {
             settings.backgroundColorHSB = rgbToHsb(changedColor);
         });
         gui.add(settings, "backgroundOpacity").name("Background opacity").min(0).max(100).step(1);
+        gui.add(settings, "scale").min(.1).max(1).step(.1);
     }
     function rgbToHsb(rgb: []) {
         let [r, g, b] = rgb.map((v) => v / 255);
