@@ -37,8 +37,8 @@ let sketch = function (p5Library: p5) {
     let gui: GUI;
     p5Library.setup = function () {
         p5Library.createCanvas(p5Library.windowWidth, p5Library.windowHeight);
-        x = p5Library.random(0, p5Library.width);
-        y = p5Library.random(0, p5Library.height);
+        x = p5Library.width * 0.5;
+        y = p5Library.height * 0.5;
         initializeGui();
     }
 
