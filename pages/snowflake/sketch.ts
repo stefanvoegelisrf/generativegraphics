@@ -52,7 +52,7 @@ let sketch = function (p5Library: p5) {
         p5Library.beginShape();
         for (let i = 0; i <= settings.steps; i++) {
             let l = settings.length / settings.steps * i;
-            let angle = p5Library.map(p5Library.noise(i * settings.stepMultiplier, (settings.updateNoise ? p5Library.frameCount : 1) * settings.speed * 0.001), 0, 1, -p5Library.PI / 6, p5Library.PI / 6);
+            let angle = p5Library.map(p5Library.noise(i * settings.stepMultiplier, (settings.updateNoise ? p5Library.frameCount : 1) * settings.speed * 0.001), 0, 1, -p5Library.PI / settings.numberOfArms, p5Library.PI / settings.numberOfArms);
             let x = l * p5Library.cos(angle);
             let y = l * p5Library.sin(angle);
             p5Library.vertex(x, y);
